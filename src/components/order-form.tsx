@@ -63,6 +63,7 @@ export function OrderForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!customerId) return alert("Please select a customer");
     if (items.length === 0) return alert("Please add at least one item");
     
     // Validation: Check if any item has no product selected
