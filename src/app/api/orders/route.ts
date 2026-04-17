@@ -9,32 +9,61 @@ export async function POST(req: Request) {
   if (!session) return new NextResponse("Unauthorized", { status: 401 });
 
   try {
-    const { customerId, items, total, amountPaid } = await req.json();
+    const body = await req.json();
+    console.log("Order creation started. Body:", JSON.stringify(body));
+
+    const { customerId, items, total, amountPaid } = body;
+    
+    // Validate inputs
+    if (!customerId || isNaN(parseInt(customerId))) {
+      return new NextResponse("Invalid Customer ID", { status: 400 });
+    }
+    if (!items || !Array.isArray(items) || items.length === 0) {
+      return new NextResponse("No items provided", { status: 400 });
+    }
+
     const finalAmountPaid = amountPaid || "0";
+    const totalNum = parseFloat(total);
+    const paidNum = parseFloat(finalAmountPaid);
+
+    if (isNaN(totalNum) || isNaN(paidNum)) {
+      return new NextResponse("Invalid total or amount paid", { status: 400 });
+    }
 
     // Neon-optimized transaction
     const newOrder = await db.transaction(async (tx) => {
+      console.log("Starting transaction...");
+
       // 1. Create the order
       const [order] = await tx
         .insert(orders)
         .values({
           customerId: parseInt(customerId),
-          totalAmount: total.toFixed(2),
-          amountPaid: parseFloat(finalAmountPaid).toFixed(2),
-          status: parseFloat(finalAmountPaid) >= total ? "completed" : "pending",
+          totalAmount: totalNum.toFixed(2),
+          amountPaid: paidNum.toFixed(2),
+          status: paidNum >= totalNum ? "completed" : "pending",
         })
         .returning();
+
+      console.log("Order created:", order.id);
 
       // 2. Add order items and update stock
       for (const item of items) {
         const pId = parseInt(item.productId);
         const qty = parseInt(item.quantity);
+        const price = parseFloat(item.price);
+
+        if (isNaN(pId) || isNaN(qty) || isNaN(price)) {
+          throw new Error(`Invalid item data: ${JSON.stringify(item)}`);
+        }
+
+        console.log(`Processing item: Product ${pId}, Qty ${qty}`);
 
         await tx.insert(orderItems).values({
           orderId: order.id,
           productId: pId,
           quantity: qty,
-          priceAtPurchase: parseFloat(item.price).toFixed(2),
+          priceAtPurchase: price.toFixed(2),
         });
 
         // Get current stock
@@ -45,21 +74,24 @@ export async function POST(req: Request) {
           .limit(1);
 
         if (product) {
-          // Update stock manually to be safe
+          console.log(`Updating stock for ${pId}: ${product.stockQuantity} -> ${product.stockQuantity - qty}`);
           await tx
             .update(products)
             .set({
               stockQuantity: product.stockQuantity - qty,
             })
             .where(eq(products.id, pId));
+        } else {
+          throw new Error(`Product ${pId} not found during stock update`);
         }
       }
 
       // 3. Record initial payment if any
-      if (parseFloat(finalAmountPaid) > 0) {
+      if (paidNum > 0) {
+        console.log("Recording initial payment...");
         await tx.insert(payments).values({
           orderId: order.id,
-          amount: parseFloat(finalAmountPaid).toFixed(2),
+          amount: paidNum.toFixed(2),
           method: "cash",
           reference: "Initial payment during order creation",
         });
@@ -68,9 +100,11 @@ export async function POST(req: Request) {
       return order;
     });
 
+    console.log("Order creation successful!");
     return NextResponse.json(newOrder);
-  } catch (error) {
-    console.error("Order creation error:", error);
-    return new NextResponse("Internal Server Error", { status: 500 });
+  } catch (error: any) {
+    console.error("CRITICAL: Order creation error:", error);
+    // Return detailed error message to help debugging
+    return new NextResponse(`Server Error: ${error.message || "Unknown error"}`, { status: 500 });
   }
 }
