@@ -2,7 +2,7 @@ import { db } from "@/db";
 import { customers } from "@/db/schema";
 import { count, desc } from "drizzle-orm";
 import Link from "next/link";
-import { Plus, UserPlus, Search } from "lucide-react";
+import { Plus, UserPlus, Search, Users } from "lucide-react";
 
 export default async function CustomersPage({
   searchParams,
