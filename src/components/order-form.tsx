@@ -65,6 +65,11 @@ export function OrderForm({
     e.preventDefault();
     if (items.length === 0) return alert("Please add at least one item");
     
+    // Validation: Check if any item has no product selected
+    if (items.some(item => item.productId === 0)) {
+      return alert("Please select a product for all items");
+    }
+    
     setLoading(true);
     try {
       const response = await fetch("/api/orders", {
