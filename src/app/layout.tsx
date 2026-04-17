@@ -5,7 +5,8 @@ import {
   ShoppingCart, 
   LogOut, 
   LayoutDashboard,
-  Settings
+  Settings,
+  CreditCard
 } from "lucide-react";
 import Link from "next/link";
 
@@ -30,6 +31,7 @@ export default async function DashboardLayout({
           <NavItem href="/customers" icon={<Users size={20} />} label="CRM (Customers)" />
           <NavItem href="/products" icon={<Package size={20} />} label="Inventory" />
           <NavItem href="/orders" icon={<ShoppingCart size={20} />} label="Orders" />
+          <NavItem href="/payments" icon={<CreditCard size={20} />} label="Payments Ledger" />
         </nav>
 
         <div className="p-4 border-t border-gray-200">
