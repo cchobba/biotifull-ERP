@@ -61,7 +61,7 @@ export default async function ProductsPage({
                         {product.stockQuantity}
                       </span>
                       {isLowStock && (
-                        <AlertTriangle size={16} className="ml-2 text-red-500" title="Low Stock Alert" />
+                        <AlertTriangle size={16} className="ml-2 text-red-500" />
                       )}
                     </div>
                   </td>
