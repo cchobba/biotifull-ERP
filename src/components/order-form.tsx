@@ -82,10 +82,11 @@ export function OrderForm({
         router.push("/orders");
         router.refresh();
       } else {
-        alert("Failed to create order");
+        const errorText = await response.text();
+        alert(`Failed to create order: ${errorText || response.statusText}`);
       }
     } catch (err) {
-      alert("An error occurred");
+      alert("An error occurred during submission");
     } finally {
       setLoading(false);
     }

@@ -27,19 +27,32 @@ export async function POST(req: Request) {
 
       // 2. Add order items and update stock
       for (const item of items) {
+        const pId = parseInt(item.productId);
+        const qty = parseInt(item.quantity);
+
         await tx.insert(orderItems).values({
           orderId: order.id,
-          productId: parseInt(item.productId),
-          quantity: parseInt(item.quantity),
+          productId: pId,
+          quantity: qty,
           priceAtPurchase: parseFloat(item.price).toFixed(2),
         });
 
-        await tx
-          .update(products)
-          .set({
-            stockQuantity: sql`${products.stockQuantity} - ${parseInt(item.quantity)}`,
-          })
-          .where(eq(products.id, parseInt(item.productId)));
+        // Get current stock
+        const [product] = await tx
+          .select({ stockQuantity: products.stockQuantity })
+          .from(products)
+          .where(eq(products.id, pId))
+          .limit(1);
+
+        if (product) {
+          // Update stock manually to be safe
+          await tx
+            .update(products)
+            .set({
+              stockQuantity: product.stockQuantity - qty,
+            })
+            .where(eq(products.id, pId));
+        }
       }
 
       // 3. Record initial payment if any
