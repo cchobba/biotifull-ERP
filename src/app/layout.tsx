@@ -7,10 +7,13 @@ import {
   LayoutDashboard,
   CreditCard,
   Flower2,
-  ChevronRight
+  ChevronRight,
+  Menu,
+  X
 } from "lucide-react";
 import Link from "next/link";
 import "./globals.css";
+import { MobileNav } from "@/components/mobile-nav";
 
 export default async function DashboardLayout({
   children,
@@ -19,12 +22,20 @@ export default async function DashboardLayout({
 }) {
   const session = await auth();
 
+  const navItems = [
+    { href: "/", icon: <LayoutDashboard size={18} />, label: "Overview" },
+    { href: "/customers", icon: <Users size={18} />, label: "CRM (Customers)" },
+    { href: "/products", icon: <Package size={18} />, label: "Inventory" },
+    { href: "/orders", icon: <ShoppingCart size={18} />, label: "Orders" },
+    { href: "/payments", icon: <CreditCard size={18} />, label: "Payments" },
+  ];
+
   return (
     <html lang="en">
-      <body className="antialiased">
-        <div className="flex h-screen overflow-hidden">
-          {/* Sidebar */}
-          <aside className="w-72 bg-white border-r border-brand-sage/10 flex flex-col shadow-[2px_0_10px_rgba(141,163,153,0.05)]">
+      <body className="antialiased text-gray-900">
+        <div className="flex h-screen overflow-hidden bg-[#fdfcfb]">
+          {/* Desktop Sidebar */}
+          <aside className="hidden lg:flex w-72 bg-white border-r border-brand-sage/10 flex-col shadow-[2px_0_10px_rgba(141,163,153,0.05)] shrink-0">
             <div className="p-8 pb-10">
               <div className="flex items-center gap-3">
                 <div className="bg-brand-sage/10 p-2.5 rounded-xl text-brand-sage">
@@ -39,21 +50,17 @@ export default async function DashboardLayout({
 
             <nav className="flex-1 px-6 space-y-1.5 overflow-y-auto">
               <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4 px-2">General</div>
-              <NavItem href="/" icon={<LayoutDashboard size={18} />} label="Overview" />
+              <NavItem href="/" icon={navItems[0].icon} label={navItems[0].label} />
               
               <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-8 mb-4 px-2">Business</div>
-              <NavItem href="/customers" icon={<Users size={18} />} label="CRM (Customers)" />
-              <NavItem href="/products" icon={<Package size={18} />} label="Inventory" />
-              <NavItem href="/orders" icon={<ShoppingCart size={18} />} label="Order Management" />
-              <NavItem href="/payments" icon={<CreditCard size={18} />} label="Payments Ledger" />
+              {navItems.slice(1).map((item) => (
+                <NavItem key={item.href} href={item.href} icon={item.icon} label={item.label} />
+              ))}
             </nav>
 
             <div className="p-6 mt-auto">
               <div className="bg-brand-sage-light/50 p-4 rounded-2xl mb-6 border border-brand-sage/5">
-                <div className="flex items-center gap-3 mb-1">
-                  <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                  <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wide">User Active</p>
-                </div>
+                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1">Active User</p>
                 <p className="text-xs font-semibold text-gray-700 truncate">{session?.user?.email}</p>
               </div>
 
@@ -67,16 +74,28 @@ export default async function DashboardLayout({
           </aside>
 
           {/* Main Content Area */}
-          <main className="flex-1 bg-[#fdfcfb] relative overflow-hidden flex flex-col">
+          <main className="flex-1 relative overflow-hidden flex flex-col w-full">
             {/* Soft decorative gradients */}
             <div className="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 bg-brand-sage/5 rounded-full blur-3xl pointer-events-none"></div>
             <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-96 h-96 bg-brand-rose/5 rounded-full blur-3xl pointer-events-none"></div>
             
-            <header className="h-16 px-10 flex items-center justify-between border-b border-gray-100 bg-white/30 backdrop-blur-sm z-10 shrink-0">
-              <div className="text-xs text-gray-400 font-medium">Dashboard / {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}</div>
+            {/* Mobile Header */}
+            <header className="lg:hidden h-16 px-6 flex items-center justify-between border-b border-gray-100 bg-white/80 backdrop-blur-md z-30 shrink-0">
+              <div className="flex items-center gap-2">
+                <Flower2 size={24} className="text-brand-sage" />
+                <span className="font-bold text-gray-800">Bio-tiful</span>
+              </div>
+              <MobileNav navItems={navItems} userEmail={session?.user?.email} />
             </header>
 
-            <div className="flex-1 overflow-y-auto overflow-x-hidden p-10 relative z-0">
+            {/* Desktop Header */}
+            <header className="hidden lg:flex h-16 px-10 items-center justify-between border-b border-gray-100 bg-white/30 backdrop-blur-sm z-10 shrink-0">
+              <div className="text-xs text-gray-400 font-medium tracking-wide">
+                Dashboard / {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
+              </div>
+            </header>
+
+            <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-8 lg:p-10 relative z-0">
               {children}
             </div>
           </main>
