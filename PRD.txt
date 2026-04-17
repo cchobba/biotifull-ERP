@@ -1,0 +1,99 @@
+Product Requirements Document (PRD) - Addendum: Technical Architecture
+Project Name: Bio-tiful Core ERP System
+Stack Lock: Next.js (App Router) + Neon PostgreSQL (Free) + Vercel (Free)
+
+Revised Section 7: Technical Architecture (The "Vercel + Neon" Stack)
+To successfully run a full ERP on free-tier infrastructure without it crashing or going to sleep, the architecture must be highly optimized for serverless computing.
+
+7.1. Tech Stack Breakdown
+Frontend & Backend: Next.js (v14+ App Router). Using React Server Components (RSC) for fast data fetching directly from the database, reducing client-side bundle size.
+Database: Neon PostgreSQL (Free Tier).
+Note: Neon provides a serverless driver (@neondatabase/serverless) that connects in milliseconds and cold-starts instantly, preventing Vercel function timeouts.
+ORM: Drizzle ORM. (Chosen over Prisma because Drizzle is significantly lighter, generates faster serverless cold starts, and has first-class support for Neon's serverless driver).
+Authentication: NextAuth.js (v5 / Auth.js) configured with Drizzle adapter to store user sessions in the Neon database.
+Hosting: Vercel (Hobby / Free Plan).
+7.2. Crucial Free-Tier Configuration Rules
+To prevent the dreaded Vercel Function Timeout or Neon Out of Memory errors on the free plans, the developer must adhere to the following:
+
+NO Connection Pooling Libraries needed: Standard Postgres requires PgBouncer to manage connections on Vercel. Neon’s serverless driver handles this natively over WebSockets/HTTP.
+Use neon() function, not Pool(): Database queries must be executed using Neon's HTTP-based serverless driver, not standard TCP connections.
+Pagination is Mandatory: The Orders and CRM tables cannot query SELECT *. Every list view must implement cursor-based or offset pagination (e.g., LIMIT 20 OFFSET 0) to prevent Vercel's 4.5GB memory limit from being exhausted.
+No Heavy CSV Exports: Generating large CSV files will crash a Vercel serverless function. If export is needed, it must be done client-side using a library like papaparse.
+Revised Section 8: Database Schema (Optimized for Neon/Drizzle)
+Here is the exact schema architecture to be defined in Drizzle ORM.
+
+typescript
+
+// Example Drizzle Schema Definition
+import { pgTable, serial, varchar, numeric, integer, timestamp, boolean, text } from 'drizzle-orm/pg-core';
+
+// 1. Users (Admin Access)
+export const users = pgTable('users', {
+  id: serial('id').primaryKey(),
+  email: varchar('email', { length: 255 }).notNull().unique(),
+  passwordHash: varchar('password_hash', { length: 255 }).notNull(),
+});
+
+// 2. CRM: Customers
+export const customers = pgTable('customers', {
+  id: serial('id').primaryKey(),
+  name: varchar('name', { length: 255 }).notNull(),
+  email: varchar('email', { length: 255 }),
+  phone: varchar('phone', { length: 50 }),
+  address: text('address'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+// 3. Products & Inventory
+export const products = pgTable('products', {
+  id: serial('id').primaryKey(),
+  sku: varchar('sku', { length: 50 }).notNull().unique(),
+  name: varchar('name', { length: 255 }).notNull(),
+  price: numeric('price', { precision: 10, scale: 2 }).notNull(),
+  stockQuantity: integer('stock_quantity').notNull().default(0),
+  lowStockThreshold: integer('low_stock_threshold').notNull().default(5),
+  isActive: boolean('is_active').default(true),
+});
+
+// 4. Orders
+export const orders = pgTable('orders', {
+  id: serial('id').primaryKey(),
+  customerId: integer('customer_id').references(() => customers.id),
+  status: varchar('status', { length: 50 }).notNull().default('pending'), // pending, processing, completed, cancelled
+  totalAmount: numeric('total_amount', { precision: 10, scale: 2 }).notNull(),
+  amountPaid: numeric('amount_paid', { precision: 10, scale: 2 }).notNull().default('0'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
+// 5. Order Items (Line items linking products to orders)
+export const orderItems = pgTable('order_items', {
+  id: serial('id').primaryKey(),
+  orderId: integer('order_id').references(() => orders.id).notNull(),
+  productId: integer('product_id').references(() => products.id).notNull(),
+  quantity: integer('quantity').notNull(),
+  priceAtPurchase: numeric('price_at_purchase', { precision: 10, scale: 2 }).notNull(), // Locks in the price at the time of order
+});
+
+// 6. Payments Ledger
+export const payments = pgTable('payments', {
+  id: serial('id').primaryKey(),
+  orderId: integer('order_id').references(() => orders.id).notNull(),
+  amount: numeric('amount', { precision: 10, scale: 2 }).notNull(),
+  method: varchar('method', { length: 50 }).notNull(), // cash, transfer, etc.
+  reference: varchar('reference', { length: 255 }), // Check number or TXN ID
+  paidAt: timestamp('paid_at').defaultNow().notNull(),
+});
+Revised Section 10: Deployment & DevOps Strategy
+Environment Variables Required on Vercel:
+DATABASE_URL: (Provided by Neon. Must use the ?sslmode=require parameter).
+NEXTAUTH_SECRET: (A random string generated via OpenSSL for session encryption).
+NEXTAUTH_URL: (Your Vercel deployment URL, e.g., https://bio-tiful-erp.vercel.app).
+Neon-Specific Workflow:
+Development: Developers will use Neon Branching. They will create a copy of the production database for testing new features without affecting real business data.
+Migrations: Drizzle Kit will be used to push schema changes. Note: On Vercel free tier, you cannot run migration scripts inside Vercel. Migrations must be run locally in the terminal before pushing code to GitHub/Vercel.
+Vercel Deployment: Connected directly to the GitHub repository. Pushes to the main branch trigger automatic deployments.
+Handling "Cold Starts" (The Free Tier Reality):
+On Vercel and Neon free tiers, if the app is not used for a few minutes, it "goes to sleep." The first user to click the app will experience a ~2 to 5 second delay.
+
+UX Mitigation: The Next.js frontend will load instantly (showing the sidebar and a loading skeleton/spinner), while the Serverless function wakes up the Neon database in the background to fetch the dashboard metrics.
