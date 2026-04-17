@@ -1,26 +1,52 @@
 @import "tailwindcss";
 
+@theme {
+  --color-brand-sage: #8da399;
+  --color-brand-sage-light: #f4f7f6;
+  --color-brand-sage-dark: #6b7c74;
+  --color-brand-rose: #d4a373;
+  --color-brand-blush: #faedcd;
+  --color-brand-earth: #ccd5ae;
+  --color-brand-terracotta: #bc6c25;
+}
+
 :root {
   --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --foreground: #1a1a1a;
+  --brand-primary: #8da399;
+  --brand-secondary: #bc6c25;
+  --brand-accent: #faedcd;
 }
 
 body {
-  background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: #fdfcfb;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Custom UI Elements */
+.glass-card {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.btn-primary {
+  @apply bg-brand-sage text-white px-4 py-2 rounded-lg hover:bg-brand-sage-dark transition-all shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center font-medium;
+}
+
+.btn-secondary {
+  @apply bg-white text-brand-sage-dark border border-brand-sage/20 px-4 py-2 rounded-lg hover:bg-brand-sage-light transition-all shadow-sm flex items-center justify-center font-medium;
+}
+
+.input-field {
+  @apply block w-full rounded-lg border border-gray-200 bg-white/50 px-4 py-2.5 text-gray-900 focus:border-brand-sage focus:ring-brand-sage focus:ring-1 outline-none transition-all sm:text-sm;
+}
+
+.table-header {
+  @apply px-6 py-4 text-left text-xs font-bold text-brand-sage-dark uppercase tracking-wider bg-brand-sage-light/50;
+}
+
+.status-badge {
+  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold;
 }
