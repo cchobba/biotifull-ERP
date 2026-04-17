@@ -10,45 +10,44 @@ export async function POST(req: Request) {
 
   try {
     const { customerId, items, total, amountPaid } = await req.json();
+    const finalAmountPaid = amountPaid || "0";
 
-    // Use a transaction to ensure all operations succeed or none do
+    // Neon-optimized transaction
     const newOrder = await db.transaction(async (tx) => {
       // 1. Create the order
       const [order] = await tx
         .insert(orders)
         .values({
           customerId: parseInt(customerId),
-          totalAmount: total.toString(),
-          amountPaid: amountPaid.toString(),
-          status: parseFloat(amountPaid) >= total ? "completed" : "pending",
+          totalAmount: total.toFixed(2),
+          amountPaid: parseFloat(finalAmountPaid).toFixed(2),
+          status: parseFloat(finalAmountPaid) >= total ? "completed" : "pending",
         })
         .returning();
 
       // 2. Add order items and update stock
       for (const item of items) {
-        // Insert line item
         await tx.insert(orderItems).values({
           orderId: order.id,
-          productId: item.productId,
-          quantity: item.quantity,
-          priceAtPurchase: item.price,
+          productId: parseInt(item.productId),
+          quantity: parseInt(item.quantity),
+          priceAtPurchase: parseFloat(item.price).toFixed(2),
         });
 
-        // Update product stock (Neon/Drizzle safe update)
         await tx
           .update(products)
           .set({
-            stockQuantity: sql`${products.stockQuantity} - ${item.quantity}`,
+            stockQuantity: sql`${products.stockQuantity} - ${parseInt(item.quantity)}`,
           })
-          .where(eq(products.id, item.productId));
+          .where(eq(products.id, parseInt(item.productId)));
       }
 
       // 3. Record initial payment if any
-      if (parseFloat(amountPaid) > 0) {
+      if (parseFloat(finalAmountPaid) > 0) {
         await tx.insert(payments).values({
           orderId: order.id,
-          amount: amountPaid.toString(),
-          method: "cash", // Default to cash for simplicity, can be expanded later
+          amount: parseFloat(finalAmountPaid).toFixed(2),
+          method: "cash",
           reference: "Initial payment during order creation",
         });
       }
