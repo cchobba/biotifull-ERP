@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { customers, products, orders, payments } from "@/db/schema";
-import { count, sum } from "drizzle-orm";
+import { count, sum, sql } from "drizzle-orm";
 import { Users, Package, ShoppingBag, Sparkles, TrendingUp, DollarSign, ArrowUpRight } from "lucide-react";
 import { SalesChart } from "@/components/sales-chart";
 import Link from "next/link";
