@@ -14,13 +14,22 @@ export default async function ProductsPage({
   const limit = 20;
   const offset = (page - 1) * limit;
 
-  const [totalCount] = await db.select({ value: count() }).from(products);
-  const productList = await db
-    .select()
-    .from(products)
-    .orderBy(desc(products.id))
-    .limit(limit)
-    .offset(offset);
+  let totalCount = { value: 0 };
+  let productList: any[] = [];
+
+  try {
+    const [countRes] = await db.select({ value: count() }).from(products);
+    totalCount = countRes;
+    
+    productList = await db
+      .select()
+      .from(products)
+      .orderBy(desc(products.id))
+      .limit(limit)
+      .offset(offset);
+  } catch (err) {
+    console.error("Products fetch failed:", err);
+  }
 
   const totalPages = Math.ceil(totalCount.value / limit);
 
