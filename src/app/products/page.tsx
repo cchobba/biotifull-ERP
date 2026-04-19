@@ -54,7 +54,7 @@ export default async function ProductsPage({
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 px-2">
         <QuickStat title="Total Skus" value={totalCount.value} color="primary" />
-        <QuickStat title="Low Reserves" value={productList.filter(p => p.stockQuantity <= p.lowStockThreshold).length} color="tertiary" />
+        <QuickStat title="Low Reserves" value={productList.filter(p => (p.stockQuantity || 0) <= (p.lowStockThreshold || 0)).length} color="tertiary" />
         <QuickStat title="Active Assets" value={productList.filter(p => p.isActive).length} color="secondary" />
       </div>
 
