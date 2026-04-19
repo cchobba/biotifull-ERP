@@ -45,19 +45,19 @@ export default async function DashboardLayout({
         <div className="flex h-screen overflow-hidden">
           {/* Sidebar Navigation Rail */}
           <aside className="hidden lg:flex w-72 bg-surface-container-highest flex-col shrink-0 z-20">
-            <div className="p-10">
-              <Link href="/" className="flex items-center gap-4 group">
-                <div className="relative w-12 h-12 overflow-hidden rounded-2xl shadow-lg shadow-primary/10 group-hover:scale-105 transition-transform duration-500">
+            <div className="p-8 pt-10">
+              <Link href="/" className="flex flex-col gap-4 group">
+                <div className="relative w-full h-24 bg-white rounded-lg shadow-sm border border-white/50 p-3 group-hover:shadow-md transition-all duration-500">
                   <Image 
                     src="/logo.png" 
                     alt="Bio-tiful Logo" 
                     fill 
-                    className="object-cover"
+                    className="object-contain p-1"
                     priority
                   />
                 </div>
-                <div>
-                  <h1 className="text-xl font-display font-extrabold tracking-tighter text-on-surface leading-none">Biotiful</h1>
+                <div className="px-2">
+                  <h1 className="text-xl font-display font-black tracking-tighter text-on-surface leading-none">Biotiful</h1>
                   <span className="text-[10px] uppercase tracking-[0.2em] text-primary font-black opacity-80">The Ledger</span>
                 </div>
               </Link>
@@ -94,10 +94,10 @@ export default async function DashboardLayout({
             {/* Mobile Header */}
             <header className="lg:hidden h-20 px-8 flex items-center justify-between border-b border-surface-container-high bg-surface/80 backdrop-blur-xl z-30 shrink-0">
               <Link href="/" className="flex items-center gap-3">
-                <div className="relative w-10 h-10 overflow-hidden rounded-xl">
-                  <Image src="/logo.png" alt="Bio-tiful Logo" fill className="object-cover" />
+                <div className="relative w-16 h-10 bg-white rounded p-1">
+                  <Image src="/logo.png" alt="Bio-tiful Logo" fill className="object-contain" />
                 </div>
-                <span className="font-display font-black text-on-surface tracking-tighter text-lg">Biotiful</span>
+                <span className="font-display font-black text-on-surface tracking-tighter">Biotiful</span>
               </Link>
               <MobileNav navItems={navItems} userEmail={session?.user?.email} />
             </header>
