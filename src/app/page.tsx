@@ -13,21 +13,27 @@ export default async function DashboardPage() {
   
   const revenue = parseFloat(revenueResult.value || "0");
 
-  // Fetch real data for the last 6 months
-  const monthlySales = await db.execute(sql`
-    SELECT 
-      to_char(date_trunc('month', paid_at), 'Mon') as month,
-      SUM(amount)::float as sales
-    FROM payments
-    WHERE paid_at > now() - interval '6 months'
-    GROUP BY date_trunc('month', paid_at)
-    ORDER BY date_trunc('month', paid_at) ASC
-  `);
+  // Fetch real data for the last 6 months with fallback
+  let chartData: { name: string; sales: number }[] = [];
+  try {
+    const monthlySales = await db.execute(sql`
+      SELECT 
+        to_char(date_trunc('month', paid_at), 'Mon') as month,
+        SUM(amount)::float as sales,
+        date_trunc('month', paid_at) as sort_month
+      FROM payments
+      WHERE paid_at > now() - interval '6 months'
+      GROUP BY date_trunc('month', paid_at)
+      ORDER BY sort_month ASC
+    `);
 
-  const chartData = (monthlySales as any).map((row: any) => ({
-    name: row.month,
-    sales: row.sales
-  }));
+    chartData = (monthlySales as any).rows.map((row: any) => ({
+      name: row.month,
+      sales: row.sales || 0
+    }));
+  } catch (err) {
+    console.error("Dashboard chart query failed:", err);
+  }
 
   return (
     <div className="max-w-7xl mx-auto space-y-10 pb-10">
