@@ -13,6 +13,22 @@ export default async function DashboardPage() {
   
   const revenue = parseFloat(revenueResult.value || "0");
 
+  // Fetch real data for the last 6 months
+  const monthlySales = await db.execute(sql`
+    SELECT 
+      to_char(date_trunc('month', paid_at), 'Mon') as month,
+      SUM(amount)::float as sales
+    FROM payments
+    WHERE paid_at > now() - interval '6 months'
+    GROUP BY date_trunc('month', paid_at)
+    ORDER BY date_trunc('month', paid_at) ASC
+  `);
+
+  const chartData = (monthlySales as any).map((row: any) => ({
+    name: row.month,
+    sales: row.sales
+  }));
+
   return (
     <div className="max-w-7xl mx-auto space-y-10 pb-10">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
@@ -74,7 +90,7 @@ export default async function DashboardPage() {
               <TrendingUp size={20} className="text-brand-sage" />
             </div>
           </div>
-          <SalesChart />
+          <SalesChart data={chartData} />
         </div>
 
         {/* Action Cards */}
