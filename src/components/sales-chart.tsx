@@ -41,7 +41,7 @@ export function SalesChart({ data }: { data: { name: string; sales: number }[] }
             dataKey="name" 
             axisLine={false} 
             tickLine={false} 
-            tick={{ fill: '#0b1c30', fontSize: 10, fontWeight: 800, textTransform: 'uppercase' }}
+            tick={{ fill: '#0b1c30', fontSize: 10, fontWeight: 800 }}
             dy={15}
           />
           <YAxis 
