@@ -22,6 +22,7 @@ export const products = pgTable('products', {
   id: serial('id').primaryKey(),
   sku: varchar('sku', { length: 50 }).notNull().unique(),
   name: varchar('name', { length: 255 }).notNull(),
+  imageUrl: text('image_url'),
   price: numeric('price', { precision: 10, scale: 2 }).notNull(),
   stockQuantity: integer('stock_quantity').notNull().default(0),
   lowStockThreshold: integer('low_stock_threshold').notNull().default(5),

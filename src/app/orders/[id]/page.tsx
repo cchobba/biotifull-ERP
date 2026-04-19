@@ -38,6 +38,7 @@ export default async function OrderDetailsPage({
       quantity: orderItems.quantity,
       priceAtPurchase: orderItems.priceAtPurchase,
       productName: products.name,
+      productImage: products.imageUrl,
     })
     .from(orderItems)
     .leftJoin(products, eq(orderItems.productId, products.id))
@@ -67,7 +68,7 @@ export default async function OrderDetailsPage({
           <h2 className="text-2xl font-bold text-gray-800 tracking-tight">Order ORD-{order.id.toString().padStart(5, '0')}</h2>
         </div>
         <span className={`status-badge px-4 py-1.5 text-sm uppercase tracking-widest ${
-          order.status === 'completed' || order.status === 'delivered' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'
+          order.status === 'completed' || order.status === 'delivered' ? 'bg-primary/10 text-primary' : 'bg-blue-100 text-blue-700'
         }`}>
           {order.status}
         </span>
@@ -84,9 +85,18 @@ export default async function OrderDetailsPage({
             <div className="space-y-4">
               {items.map((item) => (
                 <div key={item.id} className="flex justify-between items-center py-3 border-b border-gray-50 last:border-0">
-                  <div>
-                    <p className="font-bold text-gray-800">{item.productName}</p>
-                    <p className="text-xs text-gray-400 font-medium">Quantity: {item.quantity}</p>
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-surface-container-high overflow-hidden flex items-center justify-center text-on-surface-variant/20">
+                      {item.productImage ? (
+                        <img src={item.productImage} alt={item.productName || ""} className="w-full h-full object-cover" />
+                      ) : (
+                        <ShoppingBag size={20} />
+                      )}
+                    </div>
+                    <div>
+                      <p className="font-bold text-gray-800">{item.productName}</p>
+                      <p className="text-xs text-gray-400 font-medium">Quantity: {item.quantity}</p>
+                    </div>
                   </div>
                   <p className="font-extrabold text-gray-700">${(parseFloat(item.priceAtPurchase) * item.quantity).toFixed(2)}</p>
                 </div>

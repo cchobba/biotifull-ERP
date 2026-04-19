@@ -28,6 +28,7 @@ export default async function EditProductPage({
 
     const name = formData.get("name") as string;
     const sku = formData.get("sku") as string;
+    const imageUrl = formData.get("imageUrl") as string;
     const price = formData.get("price") as string;
     const stockQuantity = parseInt(formData.get("stockQuantity") as string);
     const lowStockThreshold = parseInt(formData.get("lowStockThreshold") as string);
@@ -38,6 +39,7 @@ export default async function EditProductPage({
       .set({
         name,
         sku,
+        imageUrl: imageUrl || null,
         price,
         stockQuantity,
         lowStockThreshold,
@@ -69,6 +71,16 @@ export default async function EditProductPage({
               type="text"
               required
               defaultValue={product.name}
+              className="input-field"
+            />
+          </div>
+          <div className="md:col-span-2">
+            <label className="block text-xs font-bold text-brand-sage-dark uppercase tracking-widest mb-1.5 ml-1">Image URL</label>
+            <input
+              name="imageUrl"
+              type="url"
+              defaultValue={product.imageUrl || ""}
+              placeholder="https://example.com/photo.jpg"
               className="input-field"
             />
           </div>

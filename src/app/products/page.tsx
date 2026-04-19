@@ -64,16 +64,24 @@ export default async function ProductsPage({
           {productList.map((product) => {
             const isLowStock = product.stockQuantity <= product.lowStockThreshold;
             return (
-              <div key={product.id} className="grid grid-cols-12 items-center bg-surface-container-lowest p-6 rounded-[2rem] group hover:bg-surface-container-low transition-all shadow-[0_10px_30px_rgba(11,28,48,0.01)] border border-transparent hover:border-white/50">
-                <div className="col-span-6 lg:col-span-5 flex items-center gap-5">
-                  <div className="w-16 h-16 rounded-2xl bg-surface-container-high text-primary flex items-center justify-center transition-transform group-hover:scale-105 relative">
-                    <Tag size={24} strokeWidth={1.5} />
-                    {!product.isActive && (
-                      <div className="absolute inset-0 bg-surface-container-highest/60 backdrop-blur-[2px] rounded-2xl flex items-center justify-center">
-                        <span className="text-[8px] font-black uppercase tracking-tighter text-on-surface/40">Archived</span>
-                      </div>
-                    )}
+              <tr key={product.id} className="grid grid-cols-12 items-center bg-surface-container-lowest p-6 rounded-[2rem] group hover:bg-surface-container-low transition-all shadow-[0_10px_30px_rgba(11,28,48,0.01)] border border-transparent hover:border-white/50">
+              <div className="col-span-6 lg:col-span-5 flex items-center gap-5">
+              <div className="w-16 h-16 rounded-2xl bg-surface-container-high text-primary flex items-center justify-center transition-transform group-hover:scale-105 relative overflow-hidden">
+                {product.imageUrl ? (
+                  <img 
+                    src={product.imageUrl} 
+                    alt={product.name} 
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <Tag size={24} strokeWidth={1.5} />
+                )}
+                {!product.isActive && (
+                  <div className="absolute inset-0 bg-surface-container-highest/60 backdrop-blur-[2px] rounded-2xl flex items-center justify-center">
+                    <span className="text-[8px] font-black uppercase tracking-tighter text-on-surface/40">Archived</span>
                   </div>
+                )}
+              </div>
                   <div className="flex flex-col">
                     <span className="font-display font-black text-on-surface tracking-tight leading-tight">{product.name}</span>
                     <span className="text-[10px] font-mono font-bold text-on-surface-variant opacity-40 uppercase tracking-[0.2em] mt-1">{product.sku}</span>

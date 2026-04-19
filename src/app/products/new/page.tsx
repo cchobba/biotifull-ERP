@@ -10,6 +10,7 @@ export default function NewProductPage() {
 
     const name = formData.get("name") as string;
     const sku = formData.get("sku") as string;
+    const imageUrl = formData.get("imageUrl") as string;
     const price = formData.get("price") as string;
     const stockQuantity = parseInt(formData.get("stockQuantity") as string);
     const lowStockThreshold = parseInt(formData.get("lowStockThreshold") as string);
@@ -17,6 +18,7 @@ export default function NewProductPage() {
     await db.insert(products).values({
       name,
       sku,
+      imageUrl: imageUrl || null,
       price: price,
       stockQuantity,
       lowStockThreshold,
@@ -45,6 +47,15 @@ export default function NewProductPage() {
               name="name"
               type="text"
               required
+              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+            />
+          </div>
+          <div className="md:col-span-2">
+            <label className="block text-sm font-medium text-gray-700">Image URL</label>
+            <input
+              name="imageUrl"
+              type="url"
+              placeholder="https://example.com/photo.jpg"
               className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
             />
           </div>

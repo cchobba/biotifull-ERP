@@ -10,6 +10,7 @@ type Product = {
   sku: string;
   price: string;
   stockQuantity: number;
+  imageUrl?: string | null;
 };
 
 type Customer = {
