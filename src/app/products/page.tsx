@@ -2,7 +2,7 @@ import { db } from "@/db";
 import { products } from "@/db/schema";
 import { count, desc } from "drizzle-orm";
 import Link from "next/link";
-import { Plus, PackageSearch, Tag, Edit2 } from "lucide-react";
+import { Plus, PackageSearch, Tag, Edit2, ChevronRight, Package, AlertCircle } from "lucide-react";
 import { DeleteButton } from "@/components/delete-button";
 
 export default async function ProductsPage({
@@ -25,122 +25,126 @@ export default async function ProductsPage({
   const totalPages = Math.ceil(totalCount.value / limit);
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6 md:space-y-8">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h2 className="text-2xl md:text-3xl font-extrabold text-gray-800 tracking-tight">Inventory</h2>
-          <p className="text-sm md:text-base text-gray-400 font-medium">Manage your collection of natural beauty products.</p>
+    <div className="max-w-[1400px] mx-auto space-y-10">
+      {/* Editorial Header */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 px-2">
+        <div className="space-y-2">
+          <div className="flex items-center gap-3">
+            <span className="w-12 h-[2px] bg-primary rounded-full"></span>
+            <span className="label-sm-editorial text-primary">Inventory Intelligence</span>
+          </div>
+          <h2 className="text-4xl font-display font-black text-on-surface tracking-tight">
+            The <span className="text-primary italic">Botanical</span> Collection
+          </h2>
+          <p className="text-sm font-bold text-on-surface-variant opacity-60">Curating and monitoring your natural reserves.</p>
         </div>
-        <Link
-          href="/products/new"
-          className="btn-primary w-full sm:w-auto"
-        >
-          <Plus size={18} className="mr-2" />
-          Add Product
+        <Link href="/products/new" className="btn-primary">
+          <Plus size={18} className="mr-3" />
+          Archive New Specimen
         </Link>
       </div>
 
-      <div className="bg-white/70 backdrop-blur-md rounded-2xl md:rounded-[2rem] border border-brand-sage/10 shadow-[0_20px_60px_rgba(141,163,153,0.05)] overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-100">
-            <thead>
-              <tr className="bg-gray-50/50">
-                <th className="px-4 md:px-8 py-4 md:py-5 text-left text-[10px] md:text-[11px] font-bold text-brand-sage-dark uppercase tracking-widest">Product Details</th>
-                <th className="hidden sm:table-cell px-4 md:px-8 py-4 md:py-5 text-left text-[10px] md:text-[11px] font-bold text-brand-sage-dark uppercase tracking-widest">Price</th>
-                <th className="px-4 md:px-8 py-4 md:py-5 text-left text-[10px] md:text-[11px] font-bold text-brand-sage-dark uppercase tracking-widest">Stock</th>
-                <th className="hidden lg:table-cell px-4 md:px-8 py-4 md:py-5 text-left text-[10px] md:text-[11px] font-bold text-brand-sage-dark uppercase tracking-widest">Status</th>
-                <th className="px-4 md:px-8 py-4 md:py-5 text-right text-[10px] md:text-[11px] font-bold text-brand-sage-dark uppercase tracking-widest">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-50">
-              {productList.map((product) => {
-                const isLowStock = product.stockQuantity <= product.lowStockThreshold;
-                return (
-                  <tr key={product.id} className="hover:bg-brand-sage/[0.02] transition-colors group">
-                    <td className="px-4 md:px-8 py-4 md:py-5">
-                      <div className="flex items-center gap-3 md:gap-4">
-                        <div className="w-8 h-8 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-brand-sage-light flex items-center justify-center text-brand-sage shrink-0 transition-transform group-hover:scale-105">
-                          <Tag size={18} strokeWidth={1.5} />
-                        </div>
-                        <div className="flex flex-col">
-                          <span className="font-bold text-gray-800 tracking-tight text-sm md:text-base">{product.name}</span>
-                          <span className="text-[9px] md:text-[10px] font-mono text-gray-400 font-bold uppercase tracking-widest">{product.sku}</span>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="hidden sm:table-cell px-4 md:px-8 py-4 md:py-5">
-                      <span className="text-xs md:text-sm font-extrabold text-brand-terracotta">${product.price}</span>
-                    </td>
-                    <td className="px-4 md:px-8 py-4 md:py-5">
-                      <div className="flex items-center gap-2">
-                        <div className={`h-2 w-2 md:h-2.5 md:w-2.5 rounded-full ${isLowStock ? 'bg-red-500 animate-pulse' : 'bg-green-500'}`}></div>
-                        <span className={`text-xs md:text-sm font-bold ${isLowStock ? 'text-red-600' : 'text-gray-700'}`}>
-                          {product.stockQuantity}
-                        </span>
-                        {isLowStock && (
-                          <span className="hidden md:inline-block text-[9px] font-bold text-red-400 uppercase tracking-tight bg-red-50 px-2 py-0.5 rounded-md border border-red-100">Low</span>
-                        )}
-                      </div>
-                    </td>
-                    <td className="hidden lg:table-cell px-4 md:px-8 py-4 md:py-5">
-                      <span className={`status-badge ${product.isActive ? 'bg-green-50 text-green-700 border border-green-100' : 'bg-gray-50 text-gray-500 border border-gray-100'}`}>
-                        {product.isActive ? 'Active' : 'Archived'}
-                      </span>
-                    </td>
-                    <td className="px-4 md:px-8 py-4 md:py-5 text-right">
-                      <div className="flex items-center justify-end gap-1 md:gap-2">
-                        <Link 
-                          href={`/products/${product.id}/edit`}
-                          className="p-1.5 md:p-2 text-gray-400 hover:text-brand-sage hover:bg-brand-sage/5 rounded-lg transition-all"
-                        >
-                          <Edit2 size={16} />
-                        </Link>
-                        <DeleteButton 
-                          id={product.id} 
-                          module="products" 
-                          className="p-1.5 md:p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
-                        />
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-              {productList.length === 0 && (
-                <tr>
-                  <td colSpan={5} className="px-4 md:px-8 py-16 text-center">
-                    <div className="flex flex-col items-center gap-4">
-                      <div className="w-12 h-12 md:w-20 md:h-20 rounded-full bg-gray-50 flex items-center justify-center text-gray-300">
-                        <PackageSearch size={40} />
-                      </div>
-                      <p className="text-sm text-gray-400 font-medium">No products found.</p>
-                    </div>
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+      {/* Stats Summary - Tonal Depth */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 px-2">
+        <QuickStat title="Total Skus" value={totalCount.value} color="primary" />
+        <QuickStat title="Low Reserves" value={productList.filter(p => p.stockQuantity <= p.lowStockThreshold).length} color="tertiary" />
+        <QuickStat title="Active Assets" value={productList.filter(p => p.isActive).length} color="secondary" />
+      </div>
+
+      {/* Products Grid/Table - Luminous Style */}
+      <div className="space-y-4 px-2">
+        <div className="grid grid-cols-12 px-8 py-4 opacity-30">
+          <div className="col-span-6 lg:col-span-5 label-sm-editorial">Specimen Details</div>
+          <div className="hidden lg:block lg:col-span-2 label-sm-editorial">Valuation</div>
+          <div className="hidden sm:block sm:col-span-3 lg:col-span-3 label-sm-editorial">Reserves Level</div>
+          <div className="col-span-6 sm:col-span-3 lg:col-span-2 text-right label-sm-editorial">Actions</div>
         </div>
 
-        {totalPages > 1 && (
-          <div className="bg-gray-50/50 px-4 md:px-8 py-4 md:py-6 border-t border-gray-50 flex justify-between items-center">
-            <Link
-              href={`/products?page=${page - 1}`}
-              className={`text-xs md:text-sm font-bold text-brand-sage hover:text-brand-sage-dark uppercase tracking-widest transition-colors ${page === 1 ? 'pointer-events-none opacity-30' : ''}`}
-            >
-              Prev
-            </Link>
-            <span className="text-[10px] md:text-xs font-extrabold text-gray-400 uppercase tracking-widest bg-white px-3 md:px-4 py-1.5 md:py-2 rounded-lg border border-gray-100 shadow-sm">
-              {page} / {totalPages}
-            </span>
-            <Link
-              href={`/products?page=${page + 1}`}
-              className={`text-xs md:text-sm font-bold text-brand-sage hover:text-brand-sage-dark uppercase tracking-widest transition-colors ${page >= totalPages ? 'pointer-events-none opacity-30' : ''}`}
-            >
-              Next
-            </Link>
+        <div className="space-y-3">
+          {productList.map((product) => {
+            const isLowStock = product.stockQuantity <= product.lowStockThreshold;
+            return (
+              <div key={product.id} className="grid grid-cols-12 items-center bg-surface-container-lowest p-6 rounded-[2rem] group hover:bg-surface-container-low transition-all shadow-[0_10px_30px_rgba(11,28,48,0.01)] border border-transparent hover:border-white/50">
+                <div className="col-span-6 lg:col-span-5 flex items-center gap-5">
+                  <div className="w-16 h-16 rounded-2xl bg-surface-container-high text-primary flex items-center justify-center transition-transform group-hover:scale-105 relative">
+                    <Tag size={24} strokeWidth={1.5} />
+                    {!product.isActive && (
+                      <div className="absolute inset-0 bg-surface-container-highest/60 backdrop-blur-[2px] rounded-2xl flex items-center justify-center">
+                        <span className="text-[8px] font-black uppercase tracking-tighter text-on-surface/40">Archived</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="font-display font-black text-on-surface tracking-tight leading-tight">{product.name}</span>
+                    <span className="text-[10px] font-mono font-bold text-on-surface-variant opacity-40 uppercase tracking-[0.2em] mt-1">{product.sku}</span>
+                  </div>
+                </div>
+
+                <div className="hidden lg:flex lg:col-span-2">
+                  <span className="text-lg font-black text-primary tracking-tighter">${parseFloat(product.price).toFixed(2)}</span>
+                </div>
+
+                <div className="hidden sm:flex sm:col-span-3 lg:col-span-3 items-center gap-3">
+                  <div className="flex-1 h-1.5 bg-surface-container-highest rounded-full overflow-hidden max-w-[100px]">
+                    <div 
+                      className={`h-full rounded-full ${isLowStock ? 'bg-tertiary shadow-[0_0_10px_rgba(181,10,83,0.3)]' : 'bg-primary/40'}`}
+                      style={{ width: `${Math.min((product.stockQuantity / (product.lowStockThreshold * 3)) * 100, 100)}%` }}
+                    ></div>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className={`text-sm font-black ${isLowStock ? 'text-tertiary' : 'text-on-surface-variant'}`}>{product.stockQuantity} units</span>
+                    {isLowStock && <span className="text-[9px] font-black text-tertiary uppercase tracking-tighter animate-pulse">Critical Reserve</span>}
+                  </div>
+                </div>
+
+                <div className="col-span-6 sm:col-span-3 lg:col-span-2 flex items-center justify-end gap-2">
+                  <Link 
+                    href={`/products/${product.id}/edit`}
+                    className="p-3 text-secondary hover:bg-white rounded-xl transition-all"
+                  >
+                    <Edit2 size={16} strokeWidth={3} />
+                  </Link>
+                  <DeleteButton 
+                    id={product.id} 
+                    module="products" 
+                    className="p-3 text-tertiary hover:bg-white rounded-xl transition-all"
+                  />
+                  <div className="p-3 text-on-surface/20 group-hover:text-primary transition-all">
+                    <ChevronRight size={18} strokeWidth={3} />
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {productList.length === 0 && (
+          <div className="bg-surface-container-low p-20 rounded-[3rem] text-center space-y-6">
+            <div className="w-20 h-20 bg-white rounded-[2rem] flex items-center justify-center mx-auto text-on-surface-variant/20 shadow-sm">
+              <Package size={40} />
+            </div>
+            <div>
+              <p className="text-xl font-display font-black text-on-surface tracking-tight">Empty Collection</p>
+              <p className="text-sm font-bold text-on-surface-variant opacity-50 mt-1">Your botanical archives are currently empty.</p>
+            </div>
           </div>
         )}
       </div>
+    </div>
+  );
+}
+
+function QuickStat({ title, value, color }: { title: string, value: number | string, color: 'primary' | 'secondary' | 'tertiary' }) {
+  const colorMap = {
+    primary: 'text-primary bg-primary/5',
+    secondary: 'text-secondary bg-secondary/5',
+    tertiary: 'text-tertiary bg-tertiary/5'
+  };
+
+  return (
+    <div className={`p-8 rounded-[2.5rem] border border-white/50 flex flex-col gap-1 transition-all hover:shadow-lg ${colorMap[color]}`}>
+      <span className="label-sm-editorial opacity-60">{title}</span>
+      <span className="text-3xl font-display font-black tracking-tight">{value}</span>
     </div>
   );
 }

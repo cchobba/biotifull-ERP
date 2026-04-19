@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Biotifull Dashboard | Luminous Ledger</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container": "#e5eeff",
+                        "secondary": "#00658d",
+                        "inverse-surface": "#213145",
+                        "primary-fixed-dim": "#88db64",
+                        "inverse-primary": "#88db64",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed": "#ffd9df",
+                        "on-primary-fixed": "#062100",
+                        "tertiary": "#b50a53",
+                        "primary-container": "#388516",
+                        "surface": "#f8f9ff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-container": "#004a69",
+                        "on-secondary-fixed-variant": "#004c6b",
+                        "tertiary-fixed-dim": "#ffb1c2",
+                        "secondary-fixed": "#c6e7ff",
+                        "error-container": "#ffdad6",
+                        "secondary-container": "#3dbeff",
+                        "on-tertiary-fixed-variant": "#8f003f",
+                        "outline": "#717a69",
+                        "on-background": "#0b1c30",
+                        "on-error": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "outline-variant": "#c0cab6",
+                        "on-primary-fixed-variant": "#195200",
+                        "error": "#ba1a1a",
+                        "background": "#f8f9ff",
+                        "on-tertiary-fixed": "#3f0018",
+                        "primary-fixed": "#a3f87d",
+                        "surface-variant": "#d3e4fe",
+                        "surface-container-high": "#dce9ff",
+                        "on-primary-container": "#f8ffee",
+                        "surface-tint": "#246d00",
+                        "primary": "#236a00",
+                        "on-secondary": "#ffffff",
+                        "secondary-fixed-dim": "#83cfff",
+                        "surface-dim": "#cbdbf5",
+                        "tertiary-container": "#d72f6b",
+                        "on-secondary-fixed": "#001e2d",
+                        "surface-bright": "#f8f9ff",
+                        "on-surface-variant": "#40493a",
+                        "on-primary": "#ffffff",
+                        "on-surface": "#0b1c30",
+                        "on-tertiary-container": "#fffbff",
+                        "surface-container-highest": "#d3e4fe",
+                        "surface-container-low": "#eff4ff",
+                        "inverse-on-surface": "#eaf1ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-headline { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass-nav { backdrop-filter: blur(12px); }
+        .card-shadow { box-shadow: 0 40px 64px -12px rgba(11, 28, 48, 0.04); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen flex overflow-hidden">
+<!-- SideNavBar (The Anchor) -->
+<aside class="hidden md:flex flex-col h-screen w-64 bg-slate-50 dark:bg-slate-950 p-4 gap-2 z-40">
+<div class="flex items-center gap-3 px-3 py-6">
+<div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-primary to-primary-container flex items-center justify-center text-white shadow-lg">
+<span class="material-symbols-outlined" data-icon="eco">eco</span>
+</div>
+<div>
+<h1 class="text-xl font-extrabold text-green-800 dark:text-green-500 font-headline leading-tight">Biotifull</h1>
+<p class="text-[10px] uppercase tracking-[0.2em] font-bold text-secondary opacity-70">Luminous Ledger</p>
+</div>
+</div>
+<nav class="flex-1 mt-4 space-y-1">
+<!-- Active: Dashboard -->
+<a class="flex items-center gap-3 px-4 py-3 bg-white dark:bg-slate-900 text-green-700 dark:text-green-400 rounded-xl shadow-sm transition-transform duration-200 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined" data-icon="grid_view" style="font-variation-settings: 'FILL' 1;">grid_view</span>
+<span class="font-headline text-sm font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-xl transition-transform duration-200 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="font-headline text-sm font-medium">Inventory</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-xl transition-transform duration-200 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined" data-icon="shopping_cart">shopping_cart</span>
+<span class="font-headline text-sm font-medium">Sales</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-xl transition-transform duration-200 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined" data-icon="monitoring">monitoring</span>
+<span class="font-headline text-sm font-medium">Analytics</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-xl transition-transform duration-200 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-headline text-sm font-medium">Settings</span>
+</a>
+</nav>
+<div class="mt-auto space-y-1 border-t border-slate-200/30 pt-4">
+<button class="w-full bg-gradient-to-r from-primary to-primary-container text-on-primary py-3 rounded-xl font-headline text-sm font-bold flex items-center justify-center gap-2 mb-4 hover:opacity-90 transition-all">
+<span class="material-symbols-outlined text-sm" data-icon="add">add</span>
+                New Entry
+            </button>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="font-headline text-sm font-medium">Support</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-error hover:bg-error-container/20 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-headline text-sm font-medium">Sign Out</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto no-scrollbar relative">
+<!-- TopAppBar (Floating) -->
+<header class="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl flex justify-between items-center w-full px-8 h-16 shadow-sm dark:shadow-none">
+<div class="flex items-center gap-8">
+<span class="md:hidden text-2xl font-bold tracking-tighter text-green-700 font-headline">Biotifull</span>
+<nav class="hidden lg:flex items-center gap-6">
+<a class="text-green-700 dark:text-green-400 font-bold border-b-2 border-green-600 py-5 text-sm font-headline tracking-wide" href="#">Overview</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-green-600 transition-all duration-300 py-5 text-sm font-headline tracking-wide" href="#">Inventory</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-green-600 transition-all duration-300 py-5 text-sm font-headline tracking-wide" href="#">Orders</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-green-600 transition-all duration-300 py-5 text-sm font-headline tracking-wide" href="#">Analytics</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden sm:flex items-center bg-surface-container-low rounded-full px-4 py-1.5 gap-2 border border-outline-variant/10">
+<span class="material-symbols-outlined text-slate-400 text-lg" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-48 font-body" placeholder="Global search..." type="text"/>
+</div>
+<div class="flex items-center gap-1">
+<button class="p-2 text-slate-500 hover:bg-slate-100/50 rounded-full transition-all">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-slate-500 hover:bg-slate-100/50 rounded-full transition-all">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<button class="p-2 text-slate-500 hover:bg-slate-100/50 rounded-full transition-all">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+</button>
+</div>
+<div class="w-8 h-8 rounded-full bg-surface-container-highest overflow-hidden border-2 border-primary/20">
+<img alt="User profile" class="w-full h-full object-cover" data-alt="Close-up portrait of a professional man in a bright office with soft natural lighting and modern aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCYTjz13jOFeFZyUDQn-gjuFdC_x16QixLDGgCJvlELZPTZTBRs9uQvANw1UqYnhoEpFI7Ubjf8IC_ZDnVHpwNb-I65mMG-oGuIBkm1W-k6cNrGU2WUiZ6eDw1Ic0fcRuI3-eFJUWvyWkklPx5oipOLBuTVMaWO6ZMzvBSQc3MnKqDcDANEJWX22OnkFAtWm3YPRnEC09KqPg8vZfSfUPU4cQfdcUHdv0gcFBF10Dvh9fzBSpQMUCcfMVertrnw-0CZ_rKRnchnw6LC"/>
+</div>
+</div>
+</header>
+<!-- Dashboard Canvas -->
+<div class="p-8 lg:px-12 max-w-7xl w-full mx-auto space-y-10">
+<!-- Welcome Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<span class="text-label-sm font-bold uppercase tracking-[0.15em] text-tertiary opacity-80 mb-2 block font-label">Operational Hub</span>
+<h2 class="text-4xl md:text-5xl font-headline font-extrabold text-on-surface tracking-tight leading-none">Good morning, <span class="text-primary">Marcus</span></h2>
+</div>
+<div class="flex items-center gap-3">
+<div class="bg-surface-container-low px-4 py-2 rounded-xl flex items-center gap-3">
+<div class="flex -space-x-2">
+<div class="w-8 h-8 rounded-full border-2 border-white overflow-hidden bg-slate-200">
+<img class="w-full h-full object-cover" data-alt="Female team member professional headshot" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCIDoKJz9kNBZ4BbgkfvbPcAekqndrosw18DF2NFPz8-Nz-wWOF-XzMiSmzBkfzqoAjSxBplehMlANmWoEUoGdty9eMAeneCDKtmP3ytg7X3nXv4-ubNINikHt94AQNWKq8-jXaZlYiDsBdpxb5wYKfHRhOx1oVsWrGyAuxYtTRgMncEc4k7hLuhTEGGaxnrLBPUJG1T9ZBflhMhDpivzx-6LyLNKNpZYP7Ut8_NNXSIyI4AfgTB-Xi-kPpXqBCLPY42TCHILIRjzY0"/>
+</div>
+<div class="w-8 h-8 rounded-full border-2 border-white overflow-hidden bg-slate-300">
+<img class="w-full h-full object-cover" data-alt="Male team member professional headshot" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAk5GrO3aB9IOgcru8hYKmP92Ozqt8w3k2f0gMEEkrFonkwC0oY8W7Nr4tObl5l4I--PHeJLrqfp8JfrLVjkqxU11Fbq9XUp4GY1d-rCe7wtk-oktyjgBh_jBeHARHWArhRV10ohB0BzAOGFJy4N2Pyj3VFaaldMhJFa_-nu2D4zQFAA7CMcJCoL2ipTiXRtJ5AKDFMb6uItAbjbbesd9GFQ0T-Hkaj5Gq2gUVK0byiBi63ujWaPf69INNCt4LD9B99ru6R5CvoykvA"/>
+</div>
+</div>
+<span class="text-xs font-bold text-slate-600 font-label">3 Team Members Online</span>
+</div>
+</div>
+</div>
+<!-- Bento Grid - Key Metrics -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Total Sales -->
+<div class="bg-surface-container-lowest p-8 rounded-3xl card-shadow group transition-all duration-300 hover:scale-[1.02] border border-transparent hover:border-primary/10">
+<div class="flex items-center justify-between mb-4">
+<div class="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-3xl" data-icon="payments">payments</span>
+</div>
+<span class="text-xs font-bold text-green-600 bg-green-100/50 px-3 py-1 rounded-full">+12.4%</span>
+</div>
+<p class="text-label-sm font-medium text-slate-500 uppercase tracking-wider mb-1 font-label">Total Sales</p>
+<h3 class="text-4xl font-headline font-extrabold text-on-surface">$284,592</h3>
+<div class="mt-4 h-1 w-full bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-primary w-3/4"></div>
+</div>
+</div>
+<!-- Active Orders -->
+<div class="bg-surface-container-lowest p-8 rounded-3xl card-shadow group transition-all duration-300 hover:scale-[1.02] border border-transparent hover:border-secondary/10">
+<div class="flex items-center justify-between mb-4">
+<div class="w-12 h-12 rounded-2xl bg-secondary/10 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-3xl" data-icon="shopping_basket">shopping_basket</span>
+</div>
+<span class="text-xs font-bold text-secondary bg-secondary-fixed/50 px-3 py-1 rounded-full">42 New</span>
+</div>
+<p class="text-label-sm font-medium text-slate-500 uppercase tracking-wider mb-1 font-label">Active Orders</p>
+<h3 class="text-4xl font-headline font-extrabold text-on-surface">1,842</h3>
+<div class="mt-4 h-1 w-full bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-1/2"></div>
+</div>
+</div>
+<!-- Stock Level -->
+<div class="bg-surface-container-lowest p-8 rounded-3xl card-shadow group transition-all duration-300 hover:scale-[1.02] border border-transparent hover:border-tertiary/10">
+<div class="flex items-center justify-between mb-4">
+<div class="w-12 h-12 rounded-2xl bg-tertiary/10 flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined text-3xl" data-icon="inventory">inventory</span>
+</div>
+<span class="text-xs font-bold text-tertiary bg-tertiary-fixed/50 px-3 py-1 rounded-full">Low Alert</span>
+</div>
+<p class="text-label-sm font-medium text-slate-500 uppercase tracking-wider mb-1 font-label">Stock Efficiency</p>
+<h3 class="text-4xl font-headline font-extrabold text-on-surface">94.2%</h3>
+<div class="mt-4 h-1 w-full bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-tertiary w-[94%]"></div>
+</div>
+</div>
+</div>
+<!-- Central Data Hub (Asymmetric Grid) -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Revenue Overview Chart (Placeholder UI) -->
+<div class="lg:col-span-2 bg-surface-container-lowest p-8 rounded-[2rem] card-shadow border border-transparent">
+<div class="flex items-center justify-between mb-10">
+<div>
+<h3 class="text-2xl font-headline font-bold text-on-surface">Revenue Overview</h3>
+<p class="text-sm text-slate-500 font-body">Financial growth performance across regions</p>
+</div>
+<div class="flex items-center gap-2">
+<button class="px-4 py-2 bg-slate-100 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-200 transition-all">Weekly</button>
+<button class="px-4 py-2 bg-primary text-white rounded-xl text-xs font-bold shadow-md shadow-primary/20">Monthly</button>
+</div>
+</div>
+<!-- Simplified High-End Chart UI -->
+<div class="relative h-64 w-full flex items-end justify-between gap-4">
+<div class="absolute inset-0 flex flex-col justify-between py-2 border-l border-slate-100 pointer-events-none">
+<div class="w-full border-t border-slate-50"></div>
+<div class="w-full border-t border-slate-50"></div>
+<div class="w-full border-t border-slate-50"></div>
+<div class="w-full border-t border-slate-50"></div>
+</div>
+<!-- Chart Bar Group -->
+<div class="flex-1 flex flex-col items-center gap-2 group">
+<div class="w-full flex items-end gap-1 px-1 flex-1">
+<div class="w-1/3 bg-primary/20 rounded-t-lg h-[40%] transition-all group-hover:h-[45%]"></div>
+<div class="w-1/3 bg-secondary rounded-t-lg h-[70%] transition-all group-hover:h-[75%]"></div>
+<div class="w-1/3 bg-tertiary/20 rounded-t-lg h-[30%] transition-all group-hover:h-[35%]"></div>
+</div>
+<span class="text-[10px] font-bold text-slate-400 font-label">JAN</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-2 group">
+<div class="w-full flex items-end gap-1 px-1 flex-1">
+<div class="w-1/3 bg-primary/20 rounded-t-lg h-[50%] transition-all group-hover:h-[55%]"></div>
+<div class="w-1/3 bg-secondary rounded-t-lg h-[85%] transition-all group-hover:h-[90%]"></div>
+<div class="w-1/3 bg-tertiary/20 rounded-t-lg h-[20%] transition-all group-hover:h-[25%]"></div>
+</div>
+<span class="text-[10px] font-bold text-slate-400 font-label">FEB</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-2 group">
+<div class="w-full flex items-end gap-1 px-1 flex-1">
+<div class="w-1/3 bg-primary/20 rounded-t-lg h-[45%]"></div>
+<div class="w-1/3 bg-secondary rounded-t-lg h-[65%]"></div>
+<div class="w-1/3 bg-tertiary/20 rounded-t-lg h-[40%]"></div>
+</div>
+<span class="text-[10px] font-bold text-slate-400 font-label">MAR</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-2 group">
+<div class="w-full flex items-end gap-1 px-1 flex-1">
+<div class="w-1/3 bg-primary/20 rounded-t-lg h-[60%]"></div>
+<div class="w-1/3 bg-secondary rounded-t-lg h-[95%] shadow-[0_-8px_20px_-4px_rgba(0,101,141,0.3)]"></div>
+<div class="w-1/3 bg-tertiary/20 rounded-t-lg h-[55%]"></div>
+</div>
+<span class="text-[10px] font-bold text-slate-400 font-label">APR</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-2 group">
+<div class="w-full flex items-end gap-1 px-1 flex-1">
+<div class="w-1/3 bg-primary/20 rounded-t-lg h-[35%]"></div>
+<div class="w-1/3 bg-secondary rounded-t-lg h-[55%]"></div>
+<div class="w-1/3 bg-tertiary/20 rounded-t-lg h-[25%]"></div>
+</div>
+<span class="text-[10px] font-bold text-slate-400 font-label">MAY</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-2 group">
+<div class="w-full flex items-end gap-1 px-1 flex-1">
+<div class="w-1/3 bg-primary/20 rounded-t-lg h-[50%]"></div>
+<div class="w-1/3 bg-secondary rounded-t-lg h-[80%]"></div>
+<div class="w-1/3 bg-tertiary/20 rounded-t-lg h-[45%]"></div>
+</div>
+<span class="text-[10px] font-bold text-slate-400 font-label">JUN</span>
+</div>
+</div>
+<div class="mt-8 flex items-center justify-center gap-8 pt-8 border-t border-slate-50">
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-primary"></div>
+<span class="text-xs font-bold text-slate-600 font-label">Direct Retail</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-secondary"></div>
+<span class="text-xs font-bold text-slate-600 font-label">Wholesale</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-tertiary"></div>
+<span class="text-xs font-bold text-slate-600 font-label">Affiliate</span>
+</div>
+</div>
+</div>
+<!-- Recent Activity Feed -->
+<div class="bg-surface-container-low p-8 rounded-[2rem] flex flex-col">
+<div class="flex items-center justify-between mb-8">
+<h3 class="text-2xl font-headline font-bold text-on-surface">Recent Activity</h3>
+<button class="text-secondary hover:underline text-xs font-bold">View All</button>
+</div>
+<div class="space-y-6 flex-1">
+<!-- Activity Item 1 -->
+<div class="flex gap-4 group">
+<div class="flex flex-col items-center">
+<div class="w-10 h-10 rounded-full bg-primary-container/20 flex items-center justify-center text-primary-container z-10 border-2 border-surface-container-low">
+<span class="material-symbols-outlined text-xl" data-icon="check_circle">check_circle</span>
+</div>
+<div class="w-0.5 flex-1 bg-slate-200 mt-2 mb-[-8px]"></div>
+</div>
+<div class="pb-4">
+<p class="text-sm font-body text-slate-700 leading-tight">
+<span class="font-bold">Inventory Restock</span>: 500 units of "Botanical Serum" added by Sarah.
+                                </p>
+<span class="text-[10px] font-bold text-slate-400 mt-1 block uppercase tracking-wide">2 minutes ago</span>
+</div>
+</div>
+<!-- Activity Item 2 -->
+<div class="flex gap-4 group">
+<div class="flex flex-col items-center">
+<div class="w-10 h-10 rounded-full bg-secondary/20 flex items-center justify-center text-secondary z-10 border-2 border-surface-container-low">
+<span class="material-symbols-outlined text-xl" data-icon="local_shipping">local_shipping</span>
+</div>
+<div class="w-0.5 flex-1 bg-slate-200 mt-2 mb-[-8px]"></div>
+</div>
+<div class="pb-4">
+<p class="text-sm font-body text-slate-700 leading-tight">
+<span class="font-bold">Bulk Shipment</span>: Order #8241 dispatched to Central Warehouse.
+                                </p>
+<span class="text-[10px] font-bold text-slate-400 mt-1 block uppercase tracking-wide">45 minutes ago</span>
+</div>
+</div>
+<!-- Activity Item 3 -->
+<div class="flex gap-4 group">
+<div class="flex flex-col items-center">
+<div class="w-10 h-10 rounded-full bg-tertiary/20 flex items-center justify-center text-tertiary z-10 border-2 border-surface-container-low">
+<span class="material-symbols-outlined text-xl" data-icon="priority_high">priority_high</span>
+</div>
+<div class="w-0.5 flex-1 bg-slate-200 mt-2 mb-[-8px]"></div>
+</div>
+<div class="pb-4">
+<p class="text-sm font-body text-slate-700 leading-tight">
+<span class="font-bold text-tertiary">Stock Alert</span>: "Evergreen Mist" reached critical low level.
+                                </p>
+<span class="text-[10px] font-bold text-slate-400 mt-1 block uppercase tracking-wide">2 hours ago</span>
+</div>
+</div>
+<!-- Activity Item 4 -->
+<div class="flex gap-4 group">
+<div class="flex flex-col items-center">
+<div class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-400 z-10 border-2 border-surface-container-low">
+<span class="material-symbols-outlined text-xl" data-icon="person_add">person_add</span>
+</div>
+</div>
+<div class="">
+<p class="text-sm font-body text-slate-700 leading-tight">
+<span class="font-bold">New Partner</span>: GreenLife Distributors onboarded successfully.
+                                </p>
+<span class="text-[10px] font-bold text-slate-400 mt-1 block uppercase tracking-wide">Yesterday, 4:30 PM</span>
+</div>
+</div>
+</div>
+<div class="mt-8">
+<div class="bg-surface-container-highest p-4 rounded-2xl border border-white/50 flex items-center gap-4">
+<div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-primary" data-icon="auto_awesome">auto_awesome</span>
+</div>
+<div class="flex-1">
+<p class="text-[11px] font-bold text-slate-600 uppercase font-label">Smart Suggestion</p>
+<p class="text-xs text-slate-500 font-body">Optimize logistics routes for next week's peak.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Detailed Grid (Secondary Insights) -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 pb-12">
+<div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm border border-slate-50">
+<p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Best Seller</p>
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl overflow-hidden bg-slate-100">
+<img class="w-full h-full object-cover" data-alt="High-end organic skincare product in a minimalist glass bottle" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBddBlG9Wpf_Q2UZJLp8xqQOEm2iDz6JLWh1o1WzEovn-92YP0yEe4CPSHRjzWghFGFrW6iAotcxqPTRGG37TOy-POy1OkdI2LcfWWfAY8WS7xaIxWIBTBd0Vp51EV9PHx63m7nOqoqoY8QuNERaV1Dps1rcaky1r62CzvpUjJ9KamBKESWYG5rDnaeXnh4BX4woQ9wCqrgGXCZdQIxOFFkEv5EZ4bvOAyxu8Dv8lXOEsf627MRSdvETDwNhYGMhQ049kdtzaY34oaA"/>
+</div>
+<div>
+<h4 class="font-headline font-bold text-on-surface">Earth Glow Serum</h4>
+<p class="text-xs text-primary font-bold">1,240 sold</p>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm border border-slate-50">
+<p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Target Progress</p>
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-center">
+<span class="text-sm font-headline font-bold text-on-surface">Q3 Growth</span>
+<span class="text-sm font-bold text-secondary">82%</span>
+</div>
+<div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-[82%]"></div>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm border border-slate-50">
+<p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Avg Order Value</p>
+<div class="flex items-center gap-3">
+<span class="text-3xl font-headline font-extrabold text-on-surface">$142.50</span>
+<span class="material-symbols-outlined text-green-500" data-icon="trending_up">trending_up</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm border border-slate-50">
+<p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Pending Tasks</p>
+<div class="flex items-center gap-3">
+<span class="text-3xl font-headline font-extrabold text-tertiary">08</span>
+<div class="flex -space-x-1">
+<div class="w-6 h-6 rounded-full bg-tertiary-fixed border border-white"></div>
+<div class="w-6 h-6 rounded-full bg-secondary-fixed border border-white"></div>
+<div class="w-6 h-6 rounded-full bg-primary-fixed border border-white"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- FAB Only for Dashboard Context -->
+<button class="fixed bottom-8 right-8 w-14 h-14 rounded-full bg-primary text-on-primary shadow-2xl flex items-center justify-center hover:scale-110 transition-transform z-50 group">
+<span class="material-symbols-outlined text-2xl group-hover:rotate-90 transition-transform" data-icon="add">add</span>
+</button>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-white/90 backdrop-blur-xl border-t border-slate-100 flex items-center justify-around px-6 z-50">
+<a class="flex flex-col items-center text-primary" href="#">
+<span class="material-symbols-outlined" data-icon="grid_view" style="font-variation-settings: 'FILL' 1;">grid_view</span>
+<span class="text-[10px] font-bold">Dash</span>
+</a>
+<a class="flex flex-col items-center text-slate-400" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="text-[10px] font-bold">Stock</span>
+</a>
+<a class="flex flex-col items-center text-slate-400" href="#">
+<span class="material-symbols-outlined" data-icon="shopping_cart">shopping_cart</span>
+<span class="text-[10px] font-bold">Sales</span>
+</a>
+<a class="flex flex-col items-center text-slate-400" href="#">
+<span class="material-symbols-outlined" data-icon="monitoring">monitoring</span>
+<span class="text-[10px] font-bold">Stats</span>
+</a>
+</nav>
+</body></html>

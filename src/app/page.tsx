@@ -1,7 +1,7 @@
 import { db } from "@/db";
 import { customers, products, orders, payments } from "@/db/schema";
 import { count, sum, sql } from "drizzle-orm";
-import { Users, Package, ShoppingBag, Sparkles, TrendingUp, DollarSign, ArrowUpRight } from "lucide-react";
+import { Users, Package, ShoppingBag, Sparkles, TrendingUp, DollarSign, ArrowUpRight, Zap, Target, Activity } from "lucide-react";
 import { SalesChart } from "@/components/sales-chart";
 import Link from "next/link";
 
@@ -13,7 +13,6 @@ export default async function DashboardPage() {
   
   const revenue = parseFloat(revenueResult.value || "0");
 
-  // Fetch real data for the last 6 months with fallback
   let chartData: { name: string; sales: number }[] = [];
   try {
     const monthlySales = await db.execute(sql`
@@ -36,94 +35,102 @@ export default async function DashboardPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto space-y-10 pb-10">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
-        <div className="flex flex-col gap-2">
-          <h2 className="text-3xl font-extrabold text-gray-800 tracking-tight flex items-center gap-3">
-            <Sparkles className="text-brand-rose" size={28} />
-            Dashboard
+    <div className="max-w-[1400px] mx-auto space-y-12">
+      {/* Editorial Header */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+        <div className="space-y-2">
+          <div className="flex items-center gap-3">
+            <span className="w-12 h-[2px] bg-tertiary rounded-full"></span>
+            <span className="label-sm-editorial text-tertiary">Real-time Intelligence</span>
+          </div>
+          <h2 className="text-5xl font-display font-black text-on-surface tracking-tight leading-[1.1]">
+            The <span className="text-primary italic">Luminous</span> <br /> Ledger Overview
           </h2>
-          <p className="text-gray-400 font-medium">Real-time performance metrics for Bio-tiful.</p>
         </div>
-        <div className="flex gap-3">
-          <Link href="/orders/new" className="btn-primary py-2.5">
-            <PlusIcon className="mr-2 h-4 w-4" /> New Order
-          </Link>
-        </div>
+        <Link href="/orders/new" className="btn-primary">
+          <Zap size={18} className="mr-3 fill-current" />
+          Initialize New Transaction
+        </Link>
       </div>
       
-      {/* Top KPIs */}
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard 
-          title="Revenue" 
-          value={`$${revenue.toLocaleString()}`} 
-          icon={<DollarSign className="text-brand-sage" size={20} />}
-          bg="bg-brand-sage/10"
-          trend="+12.5%"
-        />
-        <StatCard 
-          title="Total Orders" 
-          value={orderCount.value} 
-          icon={<ShoppingBag className="text-brand-terracotta" size={20} />}
-          bg="bg-brand-terracotta/10"
-          trend="+5.2%"
-        />
-        <StatCard 
-          title="Customers" 
-          value={customerCount.value} 
-          icon={<Users className="text-brand-rose" size={20} />}
-          bg="bg-brand-rose/10"
-          trend="+8.1%"
-        />
-        <StatCard 
-          title="Products" 
-          value={productCount.value} 
-          icon={<Package className="text-brand-earth" size={20} />}
-          bg="bg-brand-earth/20"
-          trend="Stable"
-        />
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Sales Chart */}
-        <div className="lg:col-span-2 bg-white/70 backdrop-blur-md p-8 rounded-[2rem] border border-brand-sage/10 shadow-[0_20px_50px_rgba(141,163,153,0.05)]">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h3 className="text-lg font-bold text-gray-800">Sales Analytics</h3>
-              <p className="text-xs text-gray-400 font-medium uppercase tracking-widest mt-1">Last 6 Months</p>
-            </div>
-            <div className="p-2 bg-gray-50 rounded-xl">
-              <TrendingUp size={20} className="text-brand-sage" />
-            </div>
-          </div>
-          <SalesChart data={chartData} />
+      {/* High-Impact KPIs - Asymmetric Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-8">
+          <KPICard 
+            title="Accumulated Revenue" 
+            value={`$${revenue.toLocaleString()}`} 
+            icon={<DollarSign size={24} />}
+            trend="+12.5% vs last month"
+            color="primary"
+          />
+          <KPICard 
+            title="Order Velocity" 
+            value={orderCount.value} 
+            icon={<Activity size={24} />}
+            trend="+5.2% frequency"
+            color="secondary"
+          />
         </div>
-
-        {/* Action Cards */}
-        <div className="space-y-6">
-          <QuickActionCard 
-            title="Inventory Check" 
-            desc="You have products running low on stock."
-            link="/products"
-            linkText="Manage Inventory"
-            color="brand-terracotta"
-          />
-          <QuickActionCard 
-            title="Unpaid Orders" 
-            desc="Track customers with remaining balances."
-            link="/payments"
-            linkText="View Ledger"
-            color="brand-sage"
-          />
-          <div className="bg-brand-rose/5 p-8 rounded-[2rem] border border-brand-rose/10 relative overflow-hidden group">
-            <h3 className="text-lg font-bold text-gray-800 relative z-10">Store Reports</h3>
-            <p className="text-sm text-gray-500 mt-2 relative z-10 leading-relaxed">
-              Generate detailed CSV exports for your monthly accounting.
+        <div className="bg-surface-container-low p-10 rounded-[2.5rem] flex flex-col justify-between relative overflow-hidden group border border-white/50">
+          <div className="relative z-10">
+            <p className="label-sm-editorial opacity-50 mb-2">Growth Target</p>
+            <p className="text-4xl font-display font-black text-on-surface">84<span className="text-xl opacity-40">%</span></p>
+            <p className="text-sm font-bold text-on-surface-variant mt-4 leading-relaxed">
+              You are approaching your quarterly milestone for new customer acquisitions.
             </p>
-            <button className="mt-6 flex items-center gap-2 text-xs font-bold text-brand-rose uppercase tracking-widest group-hover:gap-3 transition-all relative z-10">
-              Download Report <ArrowUpRight size={14} />
-            </button>
-            <FlowerPattern className="absolute -bottom-10 -right-10 h-32 w-32 text-brand-rose/5 group-hover:rotate-12 transition-transform duration-700" />
+          </div>
+          <div className="mt-8 relative z-10">
+            <div className="h-3 w-full bg-surface-container-highest rounded-full overflow-hidden">
+              <div className="h-full bg-tertiary w-[84%] rounded-full shadow-[0_0_15px_rgba(181,10,83,0.3)]"></div>
+            </div>
+          </div>
+          <Target className="absolute -bottom-6 -right-6 w-32 h-32 text-tertiary opacity-[0.03] group-hover:scale-110 transition-transform duration-700" />
+        </div>
+      </div>
+
+      {/* Main Analytics Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-12 items-start">
+        {/* Sales Chart - Intentional Asymmetry */}
+        <div className="lg:col-span-3 space-y-8">
+          <div className="flex items-end justify-between px-2">
+            <h3 className="text-2xl font-display font-black text-on-surface tracking-tight">Performance Stream</h3>
+            <div className="flex gap-2">
+              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                <TrendingUp size={16} strokeWidth={3} />
+              </div>
+            </div>
+          </div>
+          <div className="bg-surface-container-lowest p-10 rounded-[3rem] shadow-[0_40px_100px_rgba(11,28,48,0.03)] border border-surface-container-low">
+            <SalesChart data={chartData} />
+          </div>
+        </div>
+
+        {/* Tactical Actions - Tonal Transitions */}
+        <div className="space-y-8">
+          <h3 className="label-sm-editorial opacity-40 px-2">Tactical Journal</h3>
+          <div className="space-y-6">
+            <QuickAction 
+              title="Stock Audit" 
+              desc="4 Botanical Serums below threshold."
+              link="/products"
+              color="secondary"
+            />
+            <QuickAction 
+              title="Pending Dues" 
+              desc="12 Transactions await reconciliation."
+              link="/payments"
+              color="tertiary"
+            />
+            <div className="bg-primary p-8 rounded-[2.5rem] text-on-primary relative overflow-hidden group shadow-2xl shadow-primary/20">
+              <h4 className="text-xl font-display font-bold relative z-10">Generate Audit</h4>
+              <p className="text-sm opacity-80 mt-2 relative z-10 leading-relaxed font-medium">
+                Produce a high-fidelity CSV ledger for your botanical records.
+              </p>
+              <button className="mt-6 flex items-center gap-3 text-xs font-black uppercase tracking-[0.2em] relative z-10 bg-white/20 px-6 py-3 rounded-xl backdrop-blur-md hover:bg-white/30 transition-all">
+                Export Data <ArrowUpRight size={14} strokeWidth={3} />
+              </button>
+              <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-1000"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -131,52 +138,39 @@ export default async function DashboardPage() {
   );
 }
 
-function StatCard({ title, value, icon, bg, trend }: { title: string; value: string | number; icon: React.ReactNode; bg: string; trend: string }) {
+function KPICard({ title, value, icon, trend, color }: { title: string, value: string | number, icon: React.ReactNode, trend: string, color: 'primary' | 'secondary' }) {
+  const colorMap = {
+    primary: 'bg-primary text-on-primary shadow-primary/20',
+    secondary: 'bg-secondary text-on-secondary shadow-secondary/20'
+  };
+
   return (
-    <div className="bg-white p-6 rounded-3xl border border-brand-sage/5 shadow-[0_10px_30px_rgba(141,163,153,0.03)] hover:shadow-[0_15px_40px_rgba(141,163,153,0.06)] transition-all group">
-      <div className="flex justify-between items-start mb-4">
-        <div className={`${bg} p-3 rounded-xl group-hover:scale-110 transition-transform`}>
-          {icon}
+    <div className="bg-surface-container-lowest p-10 rounded-[2.5rem] border border-surface-container-low hover:border-primary/20 transition-all group shadow-[0_20px_60px_rgba(11,28,48,0.02)]">
+      <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-8 shadow-xl group-hover:scale-110 transition-transform ${colorMap[color]}`}>
+        {icon}
+      </div>
+      <p className="label-sm-editorial opacity-40 mb-2">{title}</p>
+      <div className="display-md text-on-surface mb-2">{value}</div>
+      <p className="text-xs font-black text-primary uppercase tracking-widest">{trend}</p>
+    </div>
+  );
+}
+
+function QuickAction({ title, desc, link, color }: { title: string, desc: string, link: string, color: 'secondary' | 'tertiary' }) {
+  const colorMap = {
+    secondary: 'text-secondary',
+    tertiary: 'text-tertiary'
+  };
+
+  return (
+    <Link href={link} className="block group">
+      <div className="bg-surface-container-low p-8 rounded-[2rem] border border-white/50 hover:bg-white transition-all shadow-sm hover:shadow-xl hover:shadow-primary/5">
+        <h4 className="font-display font-extrabold text-on-surface group-hover:text-primary transition-colors">{title}</h4>
+        <p className="text-sm font-medium text-on-surface-variant mt-2 leading-relaxed opacity-60 group-hover:opacity-100 transition-opacity">{desc}</p>
+        <div className={`mt-4 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest ${colorMap[color]}`}>
+          Execute Action <ArrowUpRight size={12} strokeWidth={3} />
         </div>
-        <span className={`text-[10px] font-black px-2 py-1 rounded-lg ${trend.startsWith('+') ? 'text-green-600 bg-green-50' : 'text-gray-400 bg-gray-50'}`}>
-          {trend}
-        </span>
       </div>
-      <div>
-        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">{title}</p>
-        <p className="text-2xl font-black text-gray-800 tracking-tight">{value}</p>
-      </div>
-    </div>
-  );
-}
-
-function QuickActionCard({ title, desc, link, linkText, color }: { title: string, desc: string, link: string, linkText: string, color: string }) {
-  return (
-    <div className="bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-md transition-all">
-      <h3 className="text-lg font-bold text-gray-800">{title}</h3>
-      <p className="text-sm text-gray-400 mt-2 leading-relaxed">{desc}</p>
-      <Link 
-        href={link} 
-        className={`mt-6 inline-flex items-center gap-2 text-xs font-bold text-${color} uppercase tracking-widest hover:underline decoration-2 underline-offset-4`}
-      >
-        {linkText} <ArrowUpRight size={14} />
-      </Link>
-    </div>
-  );
-}
-
-function PlusIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-    </svg>
-  );
-}
-
-function FlowerPattern({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 200 200" className={className} fill="currentColor">
-      <path d="M100 0C100 0 110 50 150 50C190 50 200 0 200 0C200 0 150 10 150 50C150 90 200 100 200 100C200 100 190 110 150 150C110 190 100 200 100 200C100 200 90 150 50 150C10 150 0 200 0 200C0 200 50 190 50 150C50 110 0 100 0 100C0 100 10 90 50 50C90 10 100 0 100 0Z" />
-    </svg>
+    </Link>
   );
 }
