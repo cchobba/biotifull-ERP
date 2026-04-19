@@ -1,6 +1,7 @@
 import { db } from "@/db";
 import { payments, orders, customers } from "@/db/schema";
 import { desc, eq } from "drizzle-orm";
+import { DeleteButton } from "@/components/delete-button";
 
 export default async function PaymentsPage() {
   const paymentList = await db
@@ -18,39 +19,62 @@ export default async function PaymentsPage() {
     .orderBy(desc(payments.paidAt));
 
   return (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-gray-900">Payments Ledger</h2>
+    <div className="max-w-7xl mx-auto space-y-8">
+      <div>
+        <h2 className="text-3xl font-extrabold text-gray-800 tracking-tight">Payments Ledger</h2>
+        <p className="text-gray-400 font-medium">History of all transactions processed through the system.</p>
+      </div>
       
-      <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-        <table className="min-w-full divide-y divide-gray-200 text-sm">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-4 text-left font-semibold text-gray-900">Date</th>
-              <th className="px-6 py-4 text-left font-semibold text-gray-900">Customer</th>
-              <th className="px-6 py-4 text-left font-semibold text-gray-900">Order ID</th>
-              <th className="px-6 py-4 text-left font-semibold text-gray-900">Method</th>
-              <th className="px-6 py-4 text-left font-semibold text-gray-900">Amount</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200">
-            {paymentList.map((payment) => (
-              <tr key={payment.id}>
-                <td className="px-6 py-4 text-gray-600">{payment.paidAt.toLocaleDateString()}</td>
-                <td className="px-6 py-4 font-medium text-gray-900">{payment.customerName}</td>
-                <td className="px-6 py-4 text-gray-600">ORD-{payment.orderId.toString().padStart(5, '0')}</td>
-                <td className="px-6 py-4 text-gray-600 capitalize">{payment.method}</td>
-                <td className="px-6 py-4 font-bold text-green-600">${payment.amount}</td>
+      <div className="bg-white/70 backdrop-blur-md rounded-[2rem] border border-brand-sage/10 shadow-[0_20px_60px_rgba(141,163,153,0.05)] overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-100">
+            <thead>
+              <tr className="bg-gray-50/50">
+                <th className="px-8 py-5 text-left text-[11px] font-bold text-brand-sage-dark uppercase tracking-widest">Date</th>
+                <th className="px-8 py-5 text-left text-[11px] font-bold text-brand-sage-dark uppercase tracking-widest">Customer</th>
+                <th className="hidden sm:table-cell px-8 py-5 text-left text-[11px] font-bold text-brand-sage-dark uppercase tracking-widest">Order ID</th>
+                <th className="hidden lg:table-cell px-8 py-5 text-left text-[11px] font-bold text-brand-sage-dark uppercase tracking-widest">Method</th>
+                <th className="px-8 py-5 text-left text-[11px] font-bold text-brand-sage-dark uppercase tracking-widest">Amount</th>
+                <th className="px-8 py-5 text-right text-[11px] font-bold text-brand-sage-dark uppercase tracking-widest">Actions</th>
               </tr>
-            ))}
-            {paymentList.length === 0 && (
-              <tr>
-                <td colSpan={5} className="px-6 py-8 text-center text-gray-500">
-                  No payments recorded yet.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-gray-50">
+              {paymentList.map((payment) => (
+                <tr key={payment.id} className="hover:bg-brand-sage/[0.02] transition-colors group">
+                  <td className="px-8 py-5 text-sm font-semibold text-gray-500 italic">
+                    {payment.paidAt.toLocaleDateString()}
+                  </td>
+                  <td className="px-8 py-5">
+                    <span className="font-bold text-gray-800">{payment.customerName}</span>
+                  </td>
+                  <td className="hidden sm:table-cell px-8 py-5">
+                    <span className="font-mono text-xs font-bold text-gray-400">ORD-{payment.orderId.toString().padStart(5, '0')}</span>
+                  </td>
+                  <td className="hidden lg:table-cell px-8 py-5 capitalize text-sm font-medium text-gray-500">
+                    {payment.method}
+                  </td>
+                  <td className="px-8 py-5">
+                    <span className="text-sm font-black text-green-600">${parseFloat(payment.amount).toFixed(2)}</span>
+                  </td>
+                  <td className="px-8 py-5 text-right">
+                    <DeleteButton 
+                      id={payment.id} 
+                      module="payments" 
+                      className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                    />
+                  </td>
+                </tr>
+              ))}
+              {paymentList.length === 0 && (
+                <tr>
+                  <td colSpan={6} className="px-8 py-16 text-center text-gray-400 font-medium italic">
+                    No payments recorded yet.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
