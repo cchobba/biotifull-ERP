@@ -36,7 +36,11 @@ export default async function PaymentsPage() {
           <p className="text-sm font-bold text-on-surface-variant opacity-60">Architecting your financial transparency.</p>
         </div>
         <div className="flex gap-4">
-          <div className="bg-surface-container-low px-6 py-3 rounded-2xl border border-white/50 flex items-center gap-3">
+          <Link href="/payments/new" className="btn-primary">
+            <CreditCard size={18} className="mr-3" />
+            Record Remittance
+          </Link>
+          <div className="hidden sm:flex bg-surface-container-low px-6 py-3 rounded-2xl border border-white/50 items-center gap-3">
             <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
             <span className="text-xs font-black uppercase tracking-widest text-on-surface/40">Audit Live</span>
           </div>
