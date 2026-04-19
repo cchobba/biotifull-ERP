@@ -7,10 +7,12 @@ export default async function PaymentsPage() {
   const paymentList = await db
     .select({
       id: payments.id,
-      amount: payments.amount,
+      paymentAmount: payments.amount,
       method: payments.method,
       paidAt: payments.paidAt,
       orderId: orders.id,
+      orderTotal: orders.totalAmount,
+      orderPaidTotal: orders.amountPaid,
       customerName: customers.name,
     })
     .from(payments)
@@ -19,7 +21,7 @@ export default async function PaymentsPage() {
     .orderBy(desc(payments.paidAt));
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8">
+    <div className="max-w-7xl mx-auto space-y-8 text-gray-900">
       <div>
         <h2 className="text-3xl font-extrabold text-gray-800 tracking-tight">Payments Ledger</h2>
         <p className="text-gray-400 font-medium">History of all transactions processed through the system.</p>
@@ -30,44 +32,65 @@ export default async function PaymentsPage() {
           <table className="min-w-full divide-y divide-gray-100">
             <thead>
               <tr className="bg-gray-50/50">
-                <th className="px-8 py-5 text-left text-[11px] font-bold text-brand-sage-dark uppercase tracking-widest">Date</th>
-                <th className="px-8 py-5 text-left text-[11px] font-bold text-brand-sage-dark uppercase tracking-widest">Customer</th>
-                <th className="hidden sm:table-cell px-8 py-5 text-left text-[11px] font-bold text-brand-sage-dark uppercase tracking-widest">Order ID</th>
-                <th className="hidden lg:table-cell px-8 py-5 text-left text-[11px] font-bold text-brand-sage-dark uppercase tracking-widest">Method</th>
-                <th className="px-8 py-5 text-left text-[11px] font-bold text-brand-sage-dark uppercase tracking-widest">Amount</th>
-                <th className="px-8 py-5 text-right text-[11px] font-bold text-brand-sage-dark uppercase tracking-widest">Actions</th>
+                <th className="px-6 py-5 text-left text-[11px] font-bold text-brand-sage-dark uppercase tracking-widest">Date</th>
+                <th className="px-6 py-5 text-left text-[11px] font-bold text-brand-sage-dark uppercase tracking-widest">Customer & Order</th>
+                <th className="px-6 py-5 text-left text-[11px] font-bold text-brand-sage-dark uppercase tracking-widest">Order Amount</th>
+                <th className="px-6 py-5 text-left text-[11px] font-bold text-brand-sage-dark uppercase tracking-widest">Total Paid</th>
+                <th className="px-6 py-5 text-left text-[11px] font-bold text-brand-sage-dark uppercase tracking-widest">Balance</th>
+                <th className="px-6 py-5 text-left text-[11px] font-bold text-brand-sage-dark uppercase tracking-widest">Pmt Amount</th>
+                <th className="px-6 py-5 text-right text-[11px] font-bold text-brand-sage-dark uppercase tracking-widest">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
-              {paymentList.map((payment) => (
-                <tr key={payment.id} className="hover:bg-brand-sage/[0.02] transition-colors group">
-                  <td className="px-8 py-5 text-sm font-semibold text-gray-500 italic">
-                    {payment.paidAt.toLocaleDateString()}
-                  </td>
-                  <td className="px-8 py-5">
-                    <span className="font-bold text-gray-800">{payment.customerName}</span>
-                  </td>
-                  <td className="hidden sm:table-cell px-8 py-5">
-                    <span className="font-mono text-xs font-bold text-gray-400">ORD-{payment.orderId.toString().padStart(5, '0')}</span>
-                  </td>
-                  <td className="hidden lg:table-cell px-8 py-5 capitalize text-sm font-medium text-gray-500">
-                    {payment.method}
-                  </td>
-                  <td className="px-8 py-5">
-                    <span className="text-sm font-black text-green-600">${parseFloat(payment.amount).toFixed(2)}</span>
-                  </td>
-                  <td className="px-8 py-5 text-right">
-                    <DeleteButton 
-                      id={payment.id} 
-                      module="payments" 
-                      className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
-                    />
-                  </td>
-                </tr>
-              ))}
+              {paymentList.map((payment) => {
+                const total = parseFloat(payment.orderTotal);
+                const paidSoFar = parseFloat(payment.orderPaidTotal);
+                const remaining = total - paidSoFar;
+                const isFullyPaid = remaining <= 0;
+
+                return (
+                  <tr key={payment.id} className="hover:bg-brand-sage/[0.02] transition-colors group">
+                    <td className="px-6 py-5 text-xs font-semibold text-gray-400 italic">
+                      {payment.paidAt.toLocaleDateString()}
+                    </td>
+                    <td className="px-6 py-5">
+                      <div className="flex flex-col">
+                        <span className="font-bold text-gray-800 text-sm">{payment.customerName}</span>
+                        <span className="font-mono text-[10px] font-bold text-gray-400">ORD-{payment.orderId.toString().padStart(5, '0')}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-5 font-bold text-gray-600 text-sm">
+                      ${total.toFixed(2)}
+                    </td>
+                    <td className="px-6 py-5 font-bold text-gray-600 text-sm">
+                      ${paidSoFar.toFixed(2)}
+                    </td>
+                    <td className="px-6 py-5">
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-tight ${
+                        isFullyPaid ? 'bg-green-50 text-green-600 border border-green-100' : 'bg-orange-50 text-orange-600 border border-orange-100'
+                      }`}>
+                        {isFullyPaid ? 'Fully Paid' : `$${remaining.toFixed(2)} Left`}
+                      </span>
+                    </td>
+                    <td className="px-6 py-5">
+                      <div className="flex flex-col">
+                        <span className="text-sm font-black text-brand-sage">${parseFloat(payment.paymentAmount).toFixed(2)}</span>
+                        <span className="text-[9px] uppercase font-bold text-gray-300">{payment.method}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-5 text-right">
+                      <DeleteButton 
+                        id={payment.id} 
+                        module="payments" 
+                        className="p-2 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                      />
+                    </td>
+                  </tr>
+                );
+              })}
               {paymentList.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="px-8 py-16 text-center text-gray-400 font-medium italic">
+                  <td colSpan={7} className="px-8 py-16 text-center text-gray-400 font-medium italic">
                     No payments recorded yet.
                   </td>
                 </tr>
