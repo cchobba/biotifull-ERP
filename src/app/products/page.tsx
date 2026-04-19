@@ -2,7 +2,7 @@ import { db } from "@/db";
 import { products } from "@/db/schema";
 import { count, desc } from "drizzle-orm";
 import Link from "next/link";
-import { Plus, PackageSearch, Tag, Edit2, ChevronRight, Package, AlertCircle } from "lucide-react";
+import { Plus, Tag, Edit2, ChevronRight, Package } from "lucide-react";
 import { DeleteButton } from "@/components/delete-button";
 
 export default async function ProductsPage({
@@ -26,7 +26,6 @@ export default async function ProductsPage({
 
   return (
     <div className="max-w-[1400px] mx-auto space-y-10">
-      {/* Editorial Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 px-2">
         <div className="space-y-2">
           <div className="flex items-center gap-3">
@@ -44,14 +43,12 @@ export default async function ProductsPage({
         </Link>
       </div>
 
-      {/* Stats Summary - Tonal Depth */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 px-2">
         <QuickStat title="Total Skus" value={totalCount.value} color="primary" />
         <QuickStat title="Low Reserves" value={productList.filter(p => p.stockQuantity <= p.lowStockThreshold).length} color="tertiary" />
         <QuickStat title="Active Assets" value={productList.filter(p => p.isActive).length} color="secondary" />
       </div>
 
-      {/* Products Grid/Table - Luminous Style */}
       <div className="space-y-4 px-2">
         <div className="grid grid-cols-12 px-8 py-4 opacity-30">
           <div className="col-span-6 lg:col-span-5 label-sm-editorial">Specimen Details</div>
@@ -64,24 +61,20 @@ export default async function ProductsPage({
           {productList.map((product) => {
             const isLowStock = product.stockQuantity <= product.lowStockThreshold;
             return (
-              <tr key={product.id} className="grid grid-cols-12 items-center bg-surface-container-lowest p-6 rounded-[2rem] group hover:bg-surface-container-low transition-all shadow-[0_10px_30px_rgba(11,28,48,0.01)] border border-transparent hover:border-white/50">
-              <div className="col-span-6 lg:col-span-5 flex items-center gap-5">
-              <div className="w-16 h-16 rounded-2xl bg-surface-container-high text-primary flex items-center justify-center transition-transform group-hover:scale-105 relative overflow-hidden">
-                {product.imageUrl ? (
-                  <img 
-                    src={product.imageUrl} 
-                    alt={product.name} 
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <Tag size={24} strokeWidth={1.5} />
-                )}
-                {!product.isActive && (
-                  <div className="absolute inset-0 bg-surface-container-highest/60 backdrop-blur-[2px] rounded-2xl flex items-center justify-center">
-                    <span className="text-[8px] font-black uppercase tracking-tighter text-on-surface/40">Archived</span>
+              <div key={product.id} className="grid grid-cols-12 items-center bg-surface-container-lowest p-6 rounded-[2rem] group hover:bg-surface-container-low transition-all shadow-[0_10px_30px_rgba(11,28,48,0.01)] border border-transparent hover:border-white/50">
+                <div className="col-span-6 lg:col-span-5 flex items-center gap-5">
+                  <div className="w-16 h-16 rounded-2xl bg-surface-container-high text-primary flex items-center justify-center transition-transform group-hover:scale-105 relative overflow-hidden">
+                    {product.imageUrl ? (
+                      <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover" />
+                    ) : (
+                      <Tag size={24} strokeWidth={1.5} />
+                    )}
+                    {!product.isActive && (
+                      <div className="absolute inset-0 bg-surface-container-highest/60 backdrop-blur-[2px] rounded-2xl flex items-center justify-center">
+                        <span className="text-[8px] font-black uppercase tracking-tighter text-on-surface/40">Archived</span>
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
                   <div className="flex flex-col">
                     <span className="font-display font-black text-on-surface tracking-tight leading-tight">{product.name}</span>
                     <span className="text-[10px] font-mono font-bold text-on-surface-variant opacity-40 uppercase tracking-[0.2em] mt-1">{product.sku}</span>
@@ -121,10 +114,10 @@ export default async function ProductsPage({
                     <ChevronRight size={18} strokeWidth={3} />
                   </div>
                 </div>
-                </div>
-                );
-                })}
-                </div>
+              </div>
+            );
+          })}
+        </div>
 
         {productList.length === 0 && (
           <div className="bg-surface-container-low p-20 rounded-[3rem] text-center space-y-6">
