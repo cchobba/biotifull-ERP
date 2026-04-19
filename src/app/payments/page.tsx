@@ -3,6 +3,7 @@ import { payments, orders, customers } from "@/db/schema";
 import { desc, eq } from "drizzle-orm";
 import { DeleteButton } from "@/components/delete-button";
 import { CreditCard, Wallet, ArrowDownRight, History } from "lucide-react";
+import Link from "next/link";
 
 export default async function PaymentsPage() {
   const paymentList = await db
