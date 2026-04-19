@@ -6,15 +6,13 @@ import {
   LogOut, 
   LayoutDashboard,
   CreditCard,
-  Leaf,
   ChevronRight,
-  Menu,
-  X
 } from "lucide-react";
 import Link from "next/link";
 import "./globals.css";
 import { MobileNav } from "@/components/mobile-nav";
 import { Manrope, Inter } from 'next/font/google';
+import Image from "next/image";
 
 const manrope = Manrope({ 
   subsets: ['latin'],
@@ -43,20 +41,26 @@ export default async function DashboardLayout({
 
   return (
     <html lang="en" className={`${manrope.variable} ${inter.variable}`}>
-      <body className="antialiased font-functional bg-surface">
+      <body className="antialiased font-functional bg-surface text-on-surface">
         <div className="flex h-screen overflow-hidden">
-          {/* Sidebar Navigation Rail - Atmospheric Layering */}
+          {/* Sidebar Navigation Rail */}
           <aside className="hidden lg:flex w-72 bg-surface-container-highest flex-col shrink-0 z-20">
             <div className="p-10">
-              <div className="flex items-center gap-4">
-                <div className="bg-primary p-3 rounded-2xl text-on-primary rotate-3 shadow-lg shadow-primary/20">
-                  <Leaf size={24} strokeWidth={2.5} />
+              <Link href="/" className="flex items-center gap-4 group">
+                <div className="relative w-12 h-12 overflow-hidden rounded-2xl shadow-lg shadow-primary/10 group-hover:scale-105 transition-transform duration-500">
+                  <Image 
+                    src="/logo.png" 
+                    alt="Bio-tiful Logo" 
+                    fill 
+                    className="object-cover"
+                    priority
+                  />
                 </div>
                 <div>
                   <h1 className="text-xl font-display font-extrabold tracking-tighter text-on-surface leading-none">Biotiful</h1>
                   <span className="text-[10px] uppercase tracking-[0.2em] text-primary font-black opacity-80">The Ledger</span>
                 </div>
-              </div>
+              </Link>
             </div>
 
             <nav className="flex-1 px-8 py-4 space-y-2 overflow-y-auto">
@@ -81,24 +85,24 @@ export default async function DashboardLayout({
             </div>
           </aside>
 
-          {/* Main Content Area - Light Refraction Principles */}
+          {/* Main Content Area */}
           <main className="flex-1 relative overflow-hidden flex flex-col w-full bg-surface">
-            {/* Ambient gradients instead of shadows */}
+            {/* Ambient gradients */}
             <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-primary/5 rounded-full blur-[120px] pointer-events-none"></div>
             <div className="absolute bottom-[-10%] left-[-10%] w-[60%] h-[60%] bg-secondary/5 rounded-full blur-[150px] pointer-events-none"></div>
             
-            {/* Mobile Header - Glassmorphism */}
+            {/* Mobile Header */}
             <header className="lg:hidden h-20 px-8 flex items-center justify-between border-b border-surface-container-high bg-surface/80 backdrop-blur-xl z-30 shrink-0">
-              <div className="flex items-center gap-3">
-                <div className="bg-primary p-2 rounded-xl text-on-primary">
-                  <Leaf size={18} strokeWidth={2.5} />
+              <Link href="/" className="flex items-center gap-3">
+                <div className="relative w-10 h-10 overflow-hidden rounded-xl">
+                  <Image src="/logo.png" alt="Bio-tiful Logo" fill className="object-cover" />
                 </div>
-                <span className="font-display font-black text-on-surface tracking-tighter">Biotiful</span>
-              </div>
+                <span className="font-display font-black text-on-surface tracking-tighter text-lg">Biotiful</span>
+              </Link>
               <MobileNav navItems={navItems} userEmail={session?.user?.email} />
             </header>
 
-            {/* Desktop Top Bar - Minimalist Editorial */}
+            {/* Desktop Top Bar */}
             <header className="hidden lg:flex h-24 px-12 items-center justify-between z-10 shrink-0">
               <div className="label-sm-editorial opacity-40">
                 System / {new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
