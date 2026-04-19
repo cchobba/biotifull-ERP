@@ -121,10 +121,10 @@ export default async function ProductsPage({
                     <ChevronRight size={18} strokeWidth={3} />
                   </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+                </div>
+                );
+                })}
+                </div>
 
         {productList.length === 0 && (
           <div className="bg-surface-container-low p-20 rounded-[3rem] text-center space-y-6">
