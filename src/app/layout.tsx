@@ -7,6 +7,7 @@ import {
   LayoutDashboard,
   CreditCard,
   ChevronRight,
+  Wallet,
 } from "lucide-react";
 import Link from "next/link";
 import "./globals.css";
@@ -37,6 +38,7 @@ export default async function DashboardLayout({
     { href: "/products", icon: <Package size={18} />, label: "Collection" },
     { href: "/orders", icon: <ShoppingCart size={18} />, label: "Journal" },
     { href: "/payments", icon: <CreditCard size={18} />, label: "Ledger" },
+    { href: "/expenses", icon: <Wallet size={18} />, label: "Expenses" },
   ];
 
   return (
@@ -65,7 +67,12 @@ export default async function DashboardLayout({
 
             <nav className="flex-1 px-8 py-4 space-y-2 overflow-y-auto">
               <div className="label-sm-editorial mb-6 px-4 opacity-40">System Core</div>
-              {navItems.map((item) => (
+              {navItems.slice(0, 4).map((item) => (
+                <NavItem key={item.href} href={item.href} icon={item.icon} label={item.label} />
+              ))}
+              
+              <div className="label-sm-editorial mt-10 mb-6 px-4 opacity-40">Financial Audit</div>
+              {navItems.slice(4).map((item) => (
                 <NavItem key={item.href} href={item.href} icon={item.icon} label={item.label} />
               ))}
             </nav>
