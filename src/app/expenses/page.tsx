@@ -2,23 +2,29 @@ import { db } from "@/db";
 import { expenses, providers } from "@/db/schema";
 import { desc, eq } from "drizzle-orm";
 import Link from "next/link";
-import { Plus, Wallet, Receipt, ChevronRight, Filter } from "lucide-react";
+import { Plus, Wallet, Receipt, Filter } from "lucide-react";
 import { DeleteButton } from "@/components/delete-button";
 
 export default async function ExpensesPage() {
-  const expenseList = await db
-    .select({
-      id: expenses.id,
-      description: expenses.description,
-      amount: expenses.amount,
-      category: expenses.category,
-      date: expenses.date,
-      reference: expenses.reference,
-      providerName: providers.name,
-    })
-    .from(expenses)
-    .leftJoin(providers, eq(expenses.providerId, providers.id))
-    .orderBy(desc(expenses.date));
+  let expenseList: any[] = [];
+
+  try {
+    expenseList = await db
+      .select({
+        id: expenses.id,
+        description: expenses.description,
+        amount: expenses.amount,
+        category: expenses.category,
+        date: expenses.date,
+        reference: expenses.reference,
+        providerName: providers.name,
+      })
+      .from(expenses)
+      .leftJoin(providers, eq(expenses.providerId, providers.id))
+      .orderBy(desc(expenses.date));
+  } catch (error: any) {
+    console.error("CRITICAL: Failed to fetch expenses:", error);
+  }
 
   return (
     <div className="max-w-[1400px] mx-auto space-y-10">
@@ -104,7 +110,7 @@ export default async function ExpensesPage() {
             </div>
             <div>
               <p className="text-xl font-display font-black text-on-surface tracking-tight">Ledger Silent</p>
-              <p className="text-sm font-bold text-on-surface-variant opacity-50 mt-1">No operational expenses have been chronicled.</p>
+              <p className="text-sm font-bold text-on-surface-variant opacity-50 mt-1">No operational expenses have been chronicled or database requires sync.</p>
             </div>
           </div>
         )}
