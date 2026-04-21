@@ -3,8 +3,20 @@
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Save, Upload, Link as LinkIcon, X, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, Save, Upload, Link as LinkIcon, CheckCircle2, Image as ImageIcon } from "lucide-react";
 import { createProductAction } from "@/app/products/actions";
+
+const UNIT_TYPES = [
+  { id: "unit", label: "Piece (Unit)" },
+  { id: "kg", label: "Kilogram (kg)" },
+  { id: "g", label: "Gram (g)" },
+  { id: "litre", label: "Litre (L)" },
+  { id: "ml", label: "Millilitre (ml)" },
+  { id: "meter", label: "Meter (m)" },
+  { id: "cm", label: "Centimeter (cm)" },
+  { id: "pack", label: "Pack" },
+  { id: "box", label: "Box" },
+];
 
 export default function NewProductPage() {
   const router = useRouter();
@@ -13,7 +25,6 @@ export default function NewProductPage() {
   const [uploading, setUploading] = useState(false);
   
   // Image handling state
-  const [imageType, setImageType] = useState<"url" | "upload">("url");
   const [imageUrl, setImageUrl] = useState("");
   const [previewUrl, setPreviewUrl] = useState("");
 
@@ -47,7 +58,6 @@ export default function NewProductPage() {
     setLoading(true);
     
     const formData = new FormData(e.currentTarget);
-    // Explicitly set the final image URL we got from upload or link
     formData.set("imageUrl", imageUrl);
 
     try {
@@ -78,74 +88,51 @@ export default function NewProductPage() {
       </div>
 
       <form onSubmit={handleSubmit} className="bg-white/70 backdrop-blur-md p-10 rounded-[2.5rem] border border-brand-sage/10 shadow-[0_20px_60px_rgba(11,28,48,0.03)] space-y-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
           
-          {/* Visual Record - Image Selection */}
-          <div className="space-y-6 md:col-span-2">
-            <label className="label-sm-editorial block ml-1 opacity-50 text-[10px]">01 / Visual Identity Selection</label>
-            
-            <div className="flex gap-4 mb-6">
-              <button 
-                type="button" 
-                onClick={() => setImageType("url")}
-                className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all ${imageType === 'url' ? 'bg-secondary text-white shadow-lg shadow-secondary/20' : 'bg-surface-container-low text-on-surface/40 hover:bg-surface-container-high'}`}
-              >
-                <LinkIcon size={14} strokeWidth={3} /> Link Web Record
-              </button>
-              <button 
-                type="button" 
-                onClick={() => setImageType("upload")}
-                className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all ${imageType === 'upload' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'bg-surface-container-low text-on-surface/40 hover:bg-surface-container-high'}`}
-              >
-                <Upload size={14} strokeWidth={3} /> Upload Local Data
-              </button>
+          {/* Identity & Visual Record */}
+          <div className="md:col-span-2 space-y-8">
+            <div className="space-y-4">
+              <label className="label-sm-editorial block ml-1 opacity-50 text-[10px]">01 / Product Name</label>
+              <input
+                name="name"
+                type="text"
+                required
+                placeholder="E.g. Botanical Serum No. 1"
+                className="input-field font-black text-2xl"
+              />
             </div>
 
-            <div className="relative group min-h-[200px] bg-surface-container-low rounded-[2rem] border-2 border-dashed border-white/50 flex flex-col items-center justify-center p-8 transition-all hover:bg-surface-container-highest/20 overflow-hidden">
-              {previewUrl ? (
-                <>
-                  <img src={previewUrl} className="absolute inset-0 w-full h-full object-cover opacity-20" alt="Preview" />
-                  <div className="relative z-10 flex flex-col items-center text-center">
-                    <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center text-primary shadow-xl mb-4">
-                      <CheckCircle2 size={32} strokeWidth={3} />
-                    </div>
-                    <p className="text-sm font-black text-on-surface">Record Linked Successfully</p>
-                    <button 
-                      type="button" 
-                      onClick={() => { setPreviewUrl(""); setImageUrl(""); }}
-                      className="mt-4 text-[10px] font-black uppercase tracking-[0.2em] text-tertiary hover:underline"
-                    >
-                      Purge and Replace
-                    </button>
-                  </div>
-                </>
-              ) : imageType === "url" ? (
-                <div className="w-full space-y-4 relative z-10">
-                  <div className="flex items-center gap-2 mb-2">
-                    <LinkIcon size={14} className="text-secondary" />
-                    <span className="text-[10px] font-black uppercase text-secondary tracking-widest">External URL Source</span>
-                  </div>
+            <div className="space-y-4">
+              <label className="label-sm-editorial block ml-1 opacity-50 text-[10px]">02 / Visual Representation</label>
+              <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-stretch">
+                {/* Nested URL input and Upload button */}
+                <div className="relative flex-1 w-full">
+                  <LinkIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface/20" size={18} />
                   <input
                     type="url"
-                    placeholder="https://images.unsplash.com/photo..."
-                    className="input-field bg-white/80"
+                    placeholder="Paste image URL here..."
+                    className="input-field pl-12 pr-12"
+                    value={imageUrl}
                     onChange={(e) => {
                       setImageUrl(e.target.value);
-                      // Basic preview debouncing could be added here
-                      if (e.target.value.match(/\.(jpeg|jpg|gif|png|webp|avif)$/)) {
+                      if (e.target.value.match(/\.(jpeg|jpg|gif|png|webp|avif)$/i)) {
                         setPreviewUrl(e.target.value);
                       }
                     }}
                   />
+                  {imageUrl && (
+                    <button 
+                      type="button" 
+                      onClick={() => { setImageUrl(""); setPreviewUrl(""); }}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-tertiary hover:scale-110 transition-transform"
+                    >
+                      <X size={16} strokeWidth={3} />
+                    </button>
+                  )}
                 </div>
-              ) : (
-                <div className="relative z-10 flex flex-col items-center text-center">
-                  <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center text-primary shadow-xl mb-6 cursor-pointer hover:scale-110 transition-transform" onClick={() => fileInputRef.current?.click()}>
-                    {uploading ? <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div> : <Upload size={32} strokeWidth={3} />}
-                  </div>
-                  <p className="text-sm font-bold text-on-surface opacity-60">
-                    {uploading ? "Extracting Visual Data..." : "Drag and drop or click to upload local specimen photo"}
-                  </p>
+                
+                <div className="flex shrink-0 gap-2 w-full sm:w-auto">
                   <input 
                     ref={fileInputRef}
                     type="file" 
@@ -153,22 +140,35 @@ export default function NewProductPage() {
                     className="hidden" 
                     onChange={handleFileChange}
                   />
+                  <button 
+                    type="button"
+                    disabled={uploading}
+                    onClick={() => fileInputRef.current?.click()}
+                    className="btn-primary whitespace-nowrap"
+                  >
+                    {uploading ? (
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                    ) : (
+                      <Upload size={18} className="mr-2" />
+                    )}
+                    Upload Photo
+                  </button>
+                </div>
+              </div>
+
+              {/* Preview Layer */}
+              {previewUrl && (
+                <div className="mt-4 relative w-full h-40 bg-surface-container-low rounded-2xl overflow-hidden border border-white/50 group">
+                  <img src={previewUrl} className="w-full h-full object-contain p-2" alt="Preview" />
+                  <div className="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none flex items-center justify-center">
+                    <CheckCircle2 className="text-white" size={32} />
+                  </div>
                 </div>
               )}
             </div>
           </div>
 
-          <div className="space-y-4 md:col-span-2">
-            <label className="label-sm-editorial block ml-1 opacity-50 text-[10px]">02 / Identity</label>
-            <input
-              name="name"
-              type="text"
-              required
-              placeholder="E.g. Botanical Serum No. 1"
-              className="input-field font-black text-xl"
-            />
-          </div>
-
+          {/* Pricing & Logistics */}
           <div className="space-y-4">
             <label className="label-sm-editorial block ml-1 opacity-50 text-[10px]">03 / Codification (SKU)</label>
             <input
@@ -181,50 +181,51 @@ export default function NewProductPage() {
           </div>
 
           <div className="space-y-4">
-            <label className="label-sm-editorial block ml-1 opacity-50 text-[10px]">04 / Asset Unit</label>
-            <select
-              name="unit"
-              required
-              className="input-field font-bold text-sm"
-            >
-              <option value="unit">Per Unit (Piece)</option>
-              <option value="litre">Per Litre (L)</option>
-              <option value="ml">Per Millilitre (ml)</option>
-              <option value="kg">Per Kilogram (kg)</option>
-              <option value="g">Per Gram (g)</option>
-            </select>
-          </div>
-
-          <div className="space-y-4">
-            <label className="label-sm-editorial block ml-1 opacity-50 text-[10px]">05 / Unit Valuation (TND)</label>
-            <div className="relative">
-              <input
-                name="price"
-                type="number"
-                step="0.001"
-                required
-                placeholder="0.000"
-                className="input-field font-black text-primary text-xl pr-16"
-              />
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-black text-primary/30 uppercase tracking-widest">TND</span>
+            <label className="label-sm-editorial block ml-1 opacity-50 text-[10px]">04 / Valuation & Units</label>
+            <div className="flex gap-4">
+              {/* Nested Price and Unit Dropdown */}
+              <div className="relative flex-[1.5]">
+                <input
+                  name="price"
+                  type="number"
+                  step="0.001"
+                  required
+                  placeholder="0.000"
+                  className="input-field font-black text-primary text-xl pr-16"
+                />
+                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-black text-primary/30 uppercase tracking-widest">TND</span>
+              </div>
+              <div className="flex-1 min-w-[140px]">
+                <select
+                  name="unit"
+                  required
+                  className="input-field font-bold text-sm bg-surface-container-highest/50 h-full"
+                >
+                  {UNIT_TYPES.map(unit => (
+                    <option key={unit.id} value={unit.id}>/ {unit.id}</option>
+                  ))}
+                </select>
+              </div>
             </div>
           </div>
 
           <div className="space-y-4">
-            <label className="label-sm-editorial block ml-1 opacity-50 text-[10px]">06 / Initial Reserves</label>
+            <label className="label-sm-editorial block ml-1 opacity-50 text-[10px]">05 / Initial Quantity</label>
             <input
               name="stockQuantity"
               type="number"
+              required
               defaultValue="0"
               className="input-field font-bold"
             />
           </div>
 
           <div className="space-y-4">
-            <label className="label-sm-editorial block ml-1 opacity-50 text-[10px]">07 / Critical Threshold</label>
+            <label className="label-sm-editorial block ml-1 opacity-50 text-[10px]">06 / Critical Reserve (Threshold)</label>
             <input
               name="lowStockThreshold"
               type="number"
+              required
               defaultValue="5"
               className="input-field font-bold"
             />
