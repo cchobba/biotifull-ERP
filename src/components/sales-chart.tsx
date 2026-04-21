@@ -11,9 +11,35 @@ import {
   Cell,
 } from "recharts";
 
-const COLORS = ["#236a00", "#00658d", "#236a00", "#00658d", "#236a00", "#00658d"];
+type ColorType = 'primary' | 'secondary' | 'tertiary';
 
-export function SalesChart({ data }: { data: { name: string; sales: number }[] }) {
+export function SalesChart({ 
+  data, 
+  colorType = 'primary' 
+}: { 
+  data: { name: string; sales: number }[],
+  colorType?: ColorType
+}) {
+  const themes = {
+    primary: {
+      main: "#236a00",
+      container: "#83fe70",
+      gradientId: "primaryGradient"
+    },
+    secondary: {
+      main: "#00658d",
+      container: "#c7e7ff",
+      gradientId: "secondaryGradient"
+    },
+    tertiary: {
+      main: "#b50a53",
+      container: "#ffd9e2",
+      gradientId: "tertiaryGradient"
+    }
+  };
+
+  const theme = themes[colorType];
+
   if (!data || data.length === 0) {
     return (
       <div className="h-[300px] w-full flex items-center justify-center bg-surface-container-low rounded-[2rem] border border-dashed border-surface-container-highest">
@@ -27,13 +53,9 @@ export function SalesChart({ data }: { data: { name: string; sales: number }[] }
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data}>
           <defs>
-            <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#236a00" stopOpacity={1} />
-              <stop offset="100%" stopColor="#83fe70" stopOpacity={0.8} />
-            </linearGradient>
-            <linearGradient id="barGradientAlt" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#00658d" stopOpacity={1} />
-              <stop offset="100%" stopColor="#c7e7ff" stopOpacity={0.8} />
+            <linearGradient id={theme.gradientId} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor={theme.main} stopOpacity={1} />
+              <stop offset="100%" stopColor={theme.container} stopOpacity={0.8} />
             </linearGradient>
           </defs>
           <CartesianGrid strokeDasharray="0" vertical={false} stroke="#eff4ff" />
@@ -50,7 +72,7 @@ export function SalesChart({ data }: { data: { name: string; sales: number }[] }
             tick={{ fill: '#0b1c30', fontSize: 10, fontWeight: 800, opacity: 0.3 }}
           />
           <Tooltip 
-            cursor={{ fill: 'rgba(35, 106, 0, 0.05)' }}
+            cursor={{ fill: 'rgba(0, 0, 0, 0.02)' }}
             contentStyle={{ 
               borderRadius: '20px', 
               border: 'none', 
@@ -69,15 +91,15 @@ export function SalesChart({ data }: { data: { name: string; sales: number }[] }
               fontWeight: 900,
               textTransform: 'uppercase',
               letterSpacing: '0.1em',
-              color: '#236a00',
+              color: theme.main,
               marginBottom: '4px'
             }}
           />
-          <Bar dataKey="sales" radius={[8, 8, 0, 0]} barSize={45}>
+          <Bar dataKey="sales" radius={[12, 12, 0, 0]} barSize={45}>
             {data.map((entry, index) => (
               <Cell 
                 key={`cell-${index}`} 
-                fill={index % 2 === 0 ? "url(#barGradient)" : "url(#barGradientAlt)"} 
+                fill={`url(#${theme.gradientId})`} 
               />
             ))}
           </Bar>
