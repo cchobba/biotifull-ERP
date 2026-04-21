@@ -4,6 +4,7 @@ import { desc, eq } from "drizzle-orm";
 import { DeleteButton } from "@/components/delete-button";
 import { CreditCard, Wallet, ArrowDownRight, History } from "lucide-react";
 import Link from "next/link";
+import { formatCurrencyCompact } from "@/lib/format";
 
 export default async function PaymentsPage() {
   const paymentList = await db
@@ -79,14 +80,14 @@ export default async function PaymentsPage() {
 
                 <div className="hidden lg:flex lg:col-span-2 flex-col">
                   <span className="text-sm font-black text-on-surface-variant opacity-40 uppercase tracking-tighter">Total</span>
-                  <span className="text-base font-black text-on-surface tracking-tighter">${total.toFixed(2)}</span>
+                  <span className="text-base font-black text-on-surface tracking-tighter">{formatCurrencyCompact(total)}</span>
                 </div>
 
                 <div className="hidden sm:flex sm:col-span-3 lg:col-span-2">
                   <span className={`status-badge text-[9px] font-black uppercase tracking-widest px-4 py-1.5 ${
                     isFullyPaid ? 'bg-primary/10 text-primary' : 'bg-orange-500/10 text-orange-600'
                   }`}>
-                    {isFullyPaid ? 'Settled' : `$${remaining.toFixed(2)} Due`}
+                    {isFullyPaid ? 'Settled' : `${formatCurrencyCompact(remaining)} Due`}
                   </span>
                 </div>
 
@@ -95,7 +96,7 @@ export default async function PaymentsPage() {
                     <ArrowDownRight size={12} strokeWidth={3} />
                     Remittance
                   </span>
-                  <span className="text-lg font-black text-primary tracking-tighter">${parseFloat(payment.paymentAmount).toFixed(2)}</span>
+                  <span className="text-lg font-black text-primary tracking-tighter">{formatCurrencyCompact(payment.paymentAmount)}</span>
                   <span className="text-[9px] font-bold text-on-surface-variant opacity-40 uppercase tracking-widest">{payment.method} • {payment.paidAt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
                 </div>
 

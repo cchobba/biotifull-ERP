@@ -4,6 +4,7 @@ import { count, desc } from "drizzle-orm";
 import Link from "next/link";
 import { Plus, Tag, Edit2, ChevronRight, Package } from "lucide-react";
 import { DeleteButton } from "@/components/delete-button";
+import { formatCurrencyCompact } from "@/lib/format";
 
 export default async function ProductsPage({
   searchParams,
@@ -20,7 +21,6 @@ export default async function ProductsPage({
   try {
     const [countRes] = await db.select({ value: count() }).from(products);
     totalCount = countRes;
-    console.log("DB Total Count:", totalCount.value);
     
     productList = await db
       .select()
@@ -28,11 +28,6 @@ export default async function ProductsPage({
       .orderBy(desc(products.id))
       .limit(limit)
       .offset(offset);
-    
-    console.log("DB Product List length:", productList.length);
-    if (productList.length > 0) {
-      console.log("First product sample:", JSON.stringify(productList[0]));
-    }
   } catch (err: any) {
     console.error("Products fetch failed:", err);
   }
@@ -40,7 +35,7 @@ export default async function ProductsPage({
   const totalPages = Math.ceil(totalCount.value / limit);
 
   return (
-    <div className="max-w-[1400px] mx-auto space-y-10">
+    <div className="max-w-[1400px] mx-auto space-y-10 text-gray-900">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 px-2">
         <div className="space-y-2">
           <div className="flex items-center gap-3">
@@ -66,8 +61,8 @@ export default async function ProductsPage({
 
       <div className="space-y-4 px-2">
         <div className="grid grid-cols-12 px-8 py-4 opacity-30">
-          <div className="col-span-6 lg:col-span-5 label-sm-editorial">Specimen Details</div>
-          <div className="hidden lg:block lg:col-span-2 label-sm-editorial">Valuation</div>
+          <div className="col-span-6 lg:col-span-4 label-sm-editorial">Specimen Details</div>
+          <div className="hidden lg:block lg:col-span-3 label-sm-editorial">Unit Valuation</div>
           <div className="hidden sm:block sm:col-span-3 lg:col-span-3 label-sm-editorial">Reserves Level</div>
           <div className="col-span-6 sm:col-span-3 lg:col-span-2 text-right label-sm-editorial">Actions</div>
         </div>
@@ -77,7 +72,7 @@ export default async function ProductsPage({
             const isLowStock = product.stockQuantity <= product.lowStockThreshold;
             return (
               <div key={product.id} className="grid grid-cols-12 items-center bg-surface-container-lowest p-6 rounded-[2rem] group hover:bg-surface-container-low transition-all shadow-[0_10px_30px_rgba(11,28,48,0.01)] border border-transparent hover:border-white/50">
-                <div className="col-span-6 lg:col-span-5 flex items-center gap-5">
+                <div className="col-span-6 lg:col-span-4 flex items-center gap-5">
                   <div className="w-16 h-16 rounded-2xl bg-surface-container-high text-primary flex items-center justify-center transition-transform group-hover:scale-105 relative overflow-hidden">
                     {product.imageUrl ? (
                       <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover" />
@@ -96,8 +91,9 @@ export default async function ProductsPage({
                   </div>
                 </div>
 
-                <div className="hidden lg:flex lg:col-span-2">
-                  <span className="text-lg font-black text-primary tracking-tighter">${parseFloat(product.price).toFixed(2)}</span>
+                <div className="hidden lg:flex lg:col-span-3 flex-col">
+                  <span className="text-sm font-black text-on-surface tracking-tight">{formatCurrencyCompact(product.price)}</span>
+                  <span className="text-[9px] font-bold text-secondary uppercase tracking-[0.2em]">Per {product.unit}</span>
                 </div>
 
                 <div className="hidden sm:flex sm:col-span-3 lg:col-span-3 items-center gap-3">
@@ -108,8 +104,7 @@ export default async function ProductsPage({
                     ></div>
                   </div>
                   <div className="flex flex-col">
-                    <span className={`text-sm font-black ${isLowStock ? 'text-tertiary' : 'text-on-surface-variant'}`}>{product.stockQuantity} units</span>
-                    {isLowStock && <span className="text-[9px] font-black text-tertiary uppercase tracking-tighter animate-pulse">Critical Reserve</span>}
+                    <span className={`text-sm font-black ${isLowStock ? 'text-tertiary' : 'text-on-surface-variant'}`}>{product.stockQuantity} <span className="text-[10px] opacity-40 uppercase">{product.unit}s</span></span>
                   </div>
                 </div>
 

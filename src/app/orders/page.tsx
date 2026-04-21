@@ -4,6 +4,7 @@ import { count, desc, eq } from "drizzle-orm";
 import Link from "next/link";
 import { Plus, ShoppingCart, Edit2, ChevronRight, BookOpen, Clock } from "lucide-react";
 import { DeleteButton } from "@/components/delete-button";
+import { formatCurrencyCompact } from "@/lib/format";
 
 export default async function OrdersPage({
   searchParams,
@@ -94,9 +95,9 @@ export default async function OrdersPage({
                 </div>
 
                 <div className="hidden sm:flex sm:col-span-3 lg:col-span-2 flex-col">
-                  <span className="text-lg font-black text-on-surface tracking-tighter">${total.toFixed(2)}</span>
+                  <span className="text-lg font-black text-on-surface tracking-tighter">{formatCurrencyCompact(total)}</span>
                   <span className={`text-[10px] font-black uppercase tracking-tighter ${isFullyPaid ? 'text-primary' : 'text-orange-500'}`}>
-                    {isFullyPaid ? 'Settled' : `$${(total - paid).toFixed(2)} Remaining`}
+                    {isFullyPaid ? 'Settled' : `${formatCurrencyCompact(total - paid)} Remaining`}
                   </span>
                 </div>
 
