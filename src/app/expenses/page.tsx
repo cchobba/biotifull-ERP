@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { expenses, providers } from "@/db/schema";
-import { desc, eq, and } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import Link from "next/link";
 import { Plus, Wallet, Receipt, Filter } from "lucide-react";
 import { DeleteButton } from "@/components/delete-button";
@@ -8,32 +8,48 @@ import { DeleteButton } from "@/components/delete-button";
 export default async function ExpensesPage({
   searchParams,
 }: {
-  searchParams: { category?: string };
+  searchParams: Promise<{ category?: string }>;
 }) {
-  const currentCategory = searchParams.category || "all";
+  const params = await searchParams;
+  const currentCategory = params.category || "all";
+  
   let expenseList: any[] = [];
 
-  try {
-    const query = db
-      .select({
-        id: expenses.id,
-        description: expenses.description,
-        amount: expenses.amount,
-        category: expenses.category,
-        date: expenses.date,
-        reference: expenses.reference,
-        providerName: providers.name,
-      })
-      .from(expenses)
-      .leftJoin(providers, eq(expenses.providerId, providers.id));
+  console.log("Current Filtering Category:", currentCategory);
 
+  try {
     if (currentCategory !== "all") {
-      expenseList = await query
+      expenseList = await db
+        .select({
+          id: expenses.id,
+          description: expenses.description,
+          amount: expenses.amount,
+          category: expenses.category,
+          date: expenses.date,
+          reference: expenses.reference,
+          providerName: providers.name,
+        })
+        .from(expenses)
+        .leftJoin(providers, eq(expenses.providerId, providers.id))
         .where(eq(expenses.category, currentCategory))
         .orderBy(desc(expenses.date));
     } else {
-      expenseList = await query.orderBy(desc(expenses.date));
+      expenseList = await db
+        .select({
+          id: expenses.id,
+          description: expenses.description,
+          amount: expenses.amount,
+          category: expenses.category,
+          date: expenses.date,
+          reference: expenses.reference,
+          providerName: providers.name,
+        })
+        .from(expenses)
+        .leftJoin(providers, eq(expenses.providerId, providers.id))
+        .orderBy(desc(expenses.date));
     }
+    
+    console.log(`Fetched ${expenseList.length} expenses for category ${currentCategory}`);
   } catch (error: any) {
     console.error("CRITICAL: Failed to fetch expenses:", error);
   }
