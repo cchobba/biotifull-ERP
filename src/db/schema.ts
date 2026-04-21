@@ -58,3 +58,24 @@ export const payments = pgTable('payments', {
   reference: varchar('reference', { length: 255 }), // Check number or TXN ID
   paidAt: timestamp('paid_at').defaultNow().notNull(),
 });
+
+// 7. Providers (Suppliers/Vendors)
+export const providers = pgTable('providers', {
+  id: serial('id').primaryKey(),
+  name: varchar('name', { length: 255 }).notNull(),
+  contactPerson: varchar('contact_person', { length: 255 }),
+  email: varchar('email', { length: 255 }),
+  phone: varchar('phone', { length: 50 }),
+  category: varchar('category', { length: 100 }), // Raw materials, packaging, utilities, etc.
+});
+
+// 8. Expenses & Purchases
+export const expenses = pgTable('expenses', {
+  id: serial('id').primaryKey(),
+  providerId: integer('provider_id').references(() => providers.id),
+  description: text('description').notNull(),
+  amount: numeric('amount', { precision: 10, scale: 2 }).notNull(),
+  category: varchar('category', { length: 100 }).notNull(), // COGS, Marketing, Salary, Rent, etc.
+  date: timestamp('date').defaultNow().notNull(),
+  reference: varchar('reference', { length: 255 }), // Invoice # or Receipt #
+});
