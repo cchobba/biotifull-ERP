@@ -20,6 +20,7 @@ export default async function ProductsPage({
   try {
     const [countRes] = await db.select({ value: count() }).from(products);
     totalCount = countRes;
+    console.log("DB Total Count:", totalCount.value);
     
     productList = await db
       .select()
@@ -27,7 +28,12 @@ export default async function ProductsPage({
       .orderBy(desc(products.id))
       .limit(limit)
       .offset(offset);
-  } catch (err) {
+    
+    console.log("DB Product List length:", productList.length);
+    if (productList.length > 0) {
+      console.log("First product sample:", JSON.stringify(productList[0]));
+    }
+  } catch (err: any) {
     console.error("Products fetch failed:", err);
   }
 
