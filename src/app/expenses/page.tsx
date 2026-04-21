@@ -1,15 +1,20 @@
 import { db } from "@/db";
 import { expenses, providers } from "@/db/schema";
-import { desc, eq } from "drizzle-orm";
+import { desc, eq, and } from "drizzle-orm";
 import Link from "next/link";
 import { Plus, Wallet, Receipt, Filter } from "lucide-react";
 import { DeleteButton } from "@/components/delete-button";
 
-export default async function ExpensesPage() {
+export default async function ExpensesPage({
+  searchParams,
+}: {
+  searchParams: { category?: string };
+}) {
+  const currentCategory = searchParams.category || "all";
   let expenseList: any[] = [];
 
   try {
-    expenseList = await db
+    const query = db
       .select({
         id: expenses.id,
         description: expenses.description,
@@ -20,11 +25,27 @@ export default async function ExpensesPage() {
         providerName: providers.name,
       })
       .from(expenses)
-      .leftJoin(providers, eq(expenses.providerId, providers.id))
-      .orderBy(desc(expenses.date));
+      .leftJoin(providers, eq(expenses.providerId, providers.id));
+
+    if (currentCategory !== "all") {
+      expenseList = await query
+        .where(eq(expenses.category, currentCategory))
+        .orderBy(desc(expenses.date));
+    } else {
+      expenseList = await query.orderBy(desc(expenses.date));
+    }
   } catch (error: any) {
     console.error("CRITICAL: Failed to fetch expenses:", error);
   }
+
+  const categories = [
+    { id: "all", label: "All Spending" },
+    { id: "COGS", label: "COGS" },
+    { id: "Marketing", label: "Marketing" },
+    { id: "Utilities", label: "Utilities" },
+    { id: "Salary", label: "Labor" },
+    { id: "Rent", label: "Rent" },
+  ];
 
   return (
     <div className="max-w-[1400px] mx-auto space-y-10">
@@ -46,12 +67,21 @@ export default async function ExpensesPage() {
         </Link>
       </div>
 
-      {/* Tonal Category Summary */}
+      {/* Functional Tabs */}
       <div className="bg-surface-container-low p-6 rounded-[2rem] border border-white/50 flex flex-wrap gap-4">
-        <div className="px-5 py-3 bg-white text-on-surface rounded-xl text-xs font-black uppercase tracking-widest shadow-sm">All Spending</div>
-        <div className="px-5 py-3 text-on-surface/40 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-white/50 transition-all cursor-pointer">COGS</div>
-        <div className="px-5 py-3 text-on-surface/40 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-white/50 transition-all cursor-pointer">Marketing</div>
-        <div className="px-5 py-3 text-on-surface/40 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-white/50 transition-all cursor-pointer">Utilities</div>
+        {categories.map((cat) => (
+          <Link
+            key={cat.id}
+            href={cat.id === "all" ? "/expenses" : `/expenses?category=${cat.id}`}
+            className={`px-5 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
+              currentCategory === cat.id 
+              ? "bg-white text-on-surface shadow-sm" 
+              : "text-on-surface/40 hover:bg-white/50"
+            }`}
+          >
+            {cat.label}
+          </Link>
+        ))}
         <div className="px-5 py-3 text-on-surface/40 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-white/50 transition-all cursor-pointer ml-auto"><Filter size={14} /></div>
       </div>
 
@@ -110,7 +140,7 @@ export default async function ExpensesPage() {
             </div>
             <div>
               <p className="text-xl font-display font-black text-on-surface tracking-tight">Ledger Silent</p>
-              <p className="text-sm font-bold text-on-surface-variant opacity-50 mt-1">No operational expenses have been chronicled or database requires sync.</p>
+              <p className="text-sm font-bold text-on-surface-variant opacity-50 mt-1">No expenses found for this category.</p>
             </div>
           </div>
         )}
