@@ -10,7 +10,7 @@ export function DeleteButton({
   className 
 }: { 
   id: number; 
-  module: "customers" | "products" | "orders" | "payments";
+  module: "customers" | "products" | "orders" | "payments" | "expenses";
   className?: string;
 }) {
   const [loading, setLoading] = useState(false);
