@@ -14,6 +14,7 @@ export async function createProductAction(formData: FormData) {
     const imageUrl = formData.get("imageUrl") as string;
     const price = formData.get("price") as string;
     const unit = formData.get("unit") as string;
+    const unitAmount = formData.get("unitAmount") as string || "1";
     const stockQuantity = parseInt(formData.get("stockQuantity") as string || "0");
     const lowStockThreshold = parseInt(formData.get("lowStockThreshold") as string || "5");
 
@@ -23,6 +24,7 @@ export async function createProductAction(formData: FormData) {
       imageUrl: imageUrl || null,
       price,
       unit,
+      unitAmount,
       stockQuantity: isNaN(stockQuantity) ? 0 : stockQuantity,
       lowStockThreshold: isNaN(lowStockThreshold) ? 5 : lowStockThreshold,
       isActive: true,

@@ -25,6 +25,7 @@ export const products = pgTable('products', {
   imageUrl: text('image_url'),
   price: numeric('price', { precision: 10, scale: 2 }).notNull(),
   unit: varchar('unit', { length: 50 }).notNull().default('unit'), // unit, litre, kg, ml, g, etc.
+  unitAmount: numeric('unit_amount', { precision: 10, scale: 3 }).notNull().default('1'), 
   stockQuantity: integer('stock_quantity').notNull().default(0),
   lowStockThreshold: integer('low_stock_threshold').notNull().default(5),
   isActive: boolean('is_active').default(true),
